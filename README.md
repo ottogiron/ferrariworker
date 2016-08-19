@@ -186,9 +186,5 @@ Go 1.6 +
 * **build-release**: Build a docker container and binaries
 * **lint**: Runs lint tools (fmt, vet)
 * **test**: Runs unit tests
-* **release-docker**: Pushes docker image to artifactory
-* **binaries**: Builds binaries for linux and darwin
-* **packages**: Builds packages for rpm and brew
-* **release**: releases rpm and brew packages
 
 **Please check each target for details**
