@@ -1,0 +1,139 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"checksumSHA1": "d0cFwiysTUXGHOzJxybUa6b9iC8=",
+			"path": "github.com/BurntSushi/toml",
+			"revision": "312db06c6c6dbfa9899e58564bacfaa584f18ab7",
+			"revisionTime": "2016-02-18T11:11:41Z"
+		},
+		{
+			"checksumSHA1": "bJJp3lBIn2Lt/9ZGivcjLw8o2Hg=",
+			"path": "github.com/hashicorp/hcl",
+			"revision": "1c284ec98f4b398443cbabb0d9197f7f4cc0077c",
+			"revisionTime": "2016-02-10T18:31:11Z"
+		},
+		{
+			"checksumSHA1": "WP5ODRo9+USuAsKYPu5RW3q8Epg=",
+			"path": "github.com/hashicorp/hcl/hcl/ast",
+			"revision": "1c284ec98f4b398443cbabb0d9197f7f4cc0077c",
+			"revisionTime": "2016-02-10T18:31:11Z"
+		},
+		{
+			"checksumSHA1": "5AUUwTIswg6icr/6vgCs0zFJl4w=",
+			"path": "github.com/hashicorp/hcl/hcl/parser",
+			"revision": "1c284ec98f4b398443cbabb0d9197f7f4cc0077c",
+			"revisionTime": "2016-02-10T18:31:11Z"
+		},
+		{
+			"checksumSHA1": "AwXW3BDC53INB5cY2CLmtIFfOPw=",
+			"path": "github.com/hashicorp/hcl/hcl/scanner",
+			"revision": "1c284ec98f4b398443cbabb0d9197f7f4cc0077c",
+			"revisionTime": "2016-02-10T18:31:11Z"
+		},
+		{
+			"checksumSHA1": "wh2mSXMC88JiAy8FIrTtL7OmY7Q=",
+			"path": "github.com/hashicorp/hcl/hcl/strconv",
+			"revision": "1c284ec98f4b398443cbabb0d9197f7f4cc0077c",
+			"revisionTime": "2016-02-10T18:31:11Z"
+		},
+		{
+			"checksumSHA1": "mCxZsnCaqyKhAC5iulJQpt8LIqA=",
+			"path": "github.com/hashicorp/hcl/hcl/token",
+			"revision": "1c284ec98f4b398443cbabb0d9197f7f4cc0077c",
+			"revisionTime": "2016-02-10T18:31:11Z"
+		},
+		{
+			"checksumSHA1": "uEaK2zagnGctsUmjWt8ZYmK1Yvs=",
+			"path": "github.com/hashicorp/hcl/json/parser",
+			"revision": "1c284ec98f4b398443cbabb0d9197f7f4cc0077c",
+			"revisionTime": "2016-02-10T18:31:11Z"
+		},
+		{
+			"checksumSHA1": "S1e0F9ZKSnqgOLfjDTYazRL28tA=",
+			"path": "github.com/hashicorp/hcl/json/scanner",
+			"revision": "1c284ec98f4b398443cbabb0d9197f7f4cc0077c",
+			"revisionTime": "2016-02-10T18:31:11Z"
+		},
+		{
+			"checksumSHA1": "fNlXQCQEnb+B3k5UDL/r15xtSJY=",
+			"path": "github.com/hashicorp/hcl/json/token",
+			"revision": "1c284ec98f4b398443cbabb0d9197f7f4cc0077c",
+			"revisionTime": "2016-02-10T18:31:11Z"
+		},
+		{
+			"checksumSHA1": "1YeGotQXMZMqk+mmm8sbBVJywpw=",
+			"path": "github.com/kr/pretty",
+			"revision": "e6ac2fc51e89a3249e82157fa0bb7a18ef9dd5bb",
+			"revisionTime": "2015-05-20T16:35:14Z"
+		},
+		{
+			"checksumSHA1": "uulQHQ7IsRKqDudBC8Go9J0gtAc=",
+			"path": "github.com/kr/text",
+			"revision": "bb797dc4fb8320488f47bf11de07a733d7233e1f",
+			"revisionTime": "2015-09-05T22:45:08Z"
+		},
+		{
+			"checksumSHA1": "KCgFx/QQG9vUtshnL9aUxeWGFyY=",
+			"path": "github.com/magiconair/properties",
+			"revision": "c81f9d71af8f8cba1466501d30326b99a4e56c19",
+			"revisionTime": "2015-12-21T21:31:49Z"
+		},
+		{
+			"checksumSHA1": "KCJhN9Dx329wAN/SeL4CxeypPyk=",
+			"path": "github.com/mitchellh/mapstructure",
+			"revision": "d2dd0262208475919e1a362f675cfc0e7c10e905",
+			"revisionTime": "2016-02-12T03:18:39Z"
+		},
+		{
+			"checksumSHA1": "65+hx0QlLzpWe5pnjAzteKBnC10=",
+			"path": "github.com/spf13/cast",
+			"revision": "ee7b3e0353166ab1f3a605294ac8cd2b77953778",
+			"revisionTime": "2015-11-26T06:42:19Z"
+		},
+		{
+			"checksumSHA1": "gAhLoEQbazL8ZNWQzA9ch/8kB/s=",
+			"path": "github.com/spf13/cobra",
+			"revision": "65a708cee0a4424f4e353d031ce440643e312f92",
+			"revisionTime": "2016-02-07T18:29:17Z"
+		},
+		{
+			"checksumSHA1": "88nY1XQWDuufclM+CiLeSxtVtaQ=",
+			"path": "github.com/spf13/jwalterweatherman",
+			"revision": "d00654080cddbd2b082acaa74007cb94a2b40866",
+			"revisionTime": "2015-10-14T07:12:31Z"
+		},
+		{
+			"checksumSHA1": "MrBzoMkuXdrGKo09/ka+JCC2Mlk=",
+			"path": "github.com/spf13/pflag",
+			"revision": "7f60f83a2c81bc3c3c0d5297f61ddfa68da9d3b7",
+			"revisionTime": "2015-10-24T10:54:09Z"
+		},
+		{
+			"checksumSHA1": "PcY9mPry2ntvgSrSBDAdTJ3E3gU=",
+			"path": "github.com/spf13/viper",
+			"revision": "c975dc1b4eacf4ec7fdbf0873638de5d090ba323",
+			"revisionTime": "2015-12-30T06:11:39Z"
+		},
+		{
+			"checksumSHA1": "rKV8YLkXpeNG1Oix8hlYqVsEFb4=",
+			"path": "github.com/streadway/amqp",
+			"revision": "2e25825abdbd7752ff08b270d313b93519a0a232",
+			"revisionTime": "2016-03-11T21:55:03Z"
+		},
+		{
+			"checksumSHA1": "WCpgePNKiUKt0S0VE/e5kF5OnzU=",
+			"path": "gopkg.in/fsnotify.v1",
+			"revision": "8611c35ab31c1c28aa903d33cf8b6e44a399b09e",
+			"revisionTime": "2016-01-10T15:04:37Z"
+		},
+		{
+			"checksumSHA1": "Ww6wiSKdA8LwxoJz4DNUF+crH4g=",
+			"path": "gopkg.in/yaml.v2",
+			"revision": "f7716cbe52baa25d2e9b0d0da546fcf909fc16b4",
+			"revisionTime": "2015-12-01T16:27:45Z"
+		}
+	],
+	"rootPath": "github.com/ottogiron/ferraristream"
+}

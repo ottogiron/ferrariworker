@@ -1,0 +1,10 @@
+ferraristream-*
+ferraristream
+ferraristream.tgz
+.test_repository_*
+.DS_Store
+.idea
+build/dist
+.vscode
+debug
+coverage.html
