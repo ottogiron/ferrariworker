@@ -12,12 +12,9 @@ var cfgFile string
 
 //RootCmd This represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
-	Use:   "ferrariprocessor",
+	Use:   "ferrariworker",
 	Short: "Process  jobs using programs in any language",
-	Long: `Process  jobs using programs in any language
-
-ENF_QUEUE_URL=amqp://guest:guest@localhost:5672/ ENF_COMMAND="node hello.js" ENF_COMMAND_RUN_PATH="/Users/ogiron" ENF_MAX_CONCURRENCY=8 ferrariprocessor process
-`,
+	Long:  `Process  jobs using programs in any language`,
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
@@ -36,7 +33,7 @@ func init() {
 	// Cobra supports Persistent Flags, which, if defined here,
 	// will be global for your application.
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.ferrariprocessor.yaml)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.ferrariworker.yaml)")
 
 }
 

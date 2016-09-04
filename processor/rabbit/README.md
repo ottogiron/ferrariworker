@@ -7,7 +7,7 @@ Provides jobs  from RabbitMQ
  jobs from rabbibmq
 
 Usage:
-  ferrariprocessor process rabbit [flags]
+  ferrariworker process rabbit [flags]
 
 Flags:
       --consumer-auto-ack               Consumer Auto ACK
@@ -30,7 +30,7 @@ Flags:
 Global Flags:
       --command string            Command to be run when a new job arrives  (default "echo \"You should  set your own command :)\"")
       --command-run-path string   Running path for the command (default ".")
-      --config string             config file (default is $HOME/.ferrariprocessor.yaml)
+      --config string             config file (default is $HOME/.ferrariworker.yaml)
       --max-concurrency int       Max number of jobs proccessed concurrently. (default 1)
       --wait-timeout int          Time to wait in milliseconds for existing jobs to be processed.  (default 200)
 ```

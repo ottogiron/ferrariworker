@@ -3,7 +3,7 @@ package rabbit
 import (
 	"fmt"
 
-	"github.com/ottogiron/ferrariprocessor/processor"
+	"github.com/ottogiron/ferrariworker/processor"
 	"github.com/streadway/amqp"
 )
 

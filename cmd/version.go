@@ -13,10 +13,10 @@ var buildDate string
 // versionCmd represents the version command
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Print the version number of ferrariprocessor",
-	Long:  `All software has versions. This is ferrariprocessor's.`,
+	Short: "Print the version number of ferrariworker",
+	Long:  `All software has versions. This is ferrariworker's.`,
 	RunE: func(cmd *cobra.Command, args []string) error {
-		fmt.Printf("ferrariprocessor job processor v%s-%s Build date:%s\n", buildVersion, buildCommit, buildDate)
+		fmt.Printf("ferrariworker job processor v%s-%s Build date:%s\n", buildVersion, buildCommit, buildDate)
 		return nil
 	},
 }

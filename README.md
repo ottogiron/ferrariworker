@@ -1,13 +1,13 @@
-# Ferrari Processor
+# Ferrari Worker
 
-## Creates a continuous stream of jobs to be processed by custom programs in any language from different  sources. 
+## Process   programs in any language from different  sources. 
 
-[![Build Status](https://travis-ci.org/ottogiron/ferrariprocessor.svg?branch=master)](https://travis-ci.org/ottogiron/ferrariprocessor)
+[![Build Status](https://travis-ci.org/ottogiron/ferrariworker.svg?branch=master)](https://travis-ci.org/ottogiron/ferrariworker)
 ## Example
 This example shows jobs processing from rabbitmq using a Node.js script as job processor.
 
 ```
-ferrariprocessor process rabbit \
+ferrariworker process rabbit \
     --uri=amqp://guest:guest@localhost:5672 \
     --queue-name=hello \
     --consumer-auto-ack=true \
@@ -49,7 +49,7 @@ hello task: 2ms
 Processors are the sources from which you can process jobs e.g rabbit.
 
 ```
-ferrariprocessor process <processor_name> <[flags]>
+ferrariworker process <processor_name> <[flags]>
 ```
 
 ### Available Processors
@@ -159,7 +159,7 @@ This function needs to be called explictly in cmd/modules.go
 ```
 package cmd
 
-import "github.com/ottogiron/ferrariprocessor/processor/rabbit"
+import "github.com/ottogiron/ferrariworker/processor/rabbit"
 
 func init() {
 	rabbit.Register()

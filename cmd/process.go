@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/ottogiron/ferrariprocessor/processor"
+	"github.com/ottogiron/ferrariworker/processor"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -30,7 +30,7 @@ var processCmd = &cobra.Command{
 	Long: `Process a  jobs based on custom configuration:
 
 e.g.
-	ferrariprocessor process \
+	ferrariworker process \
 	--command="node hello.js" \
 	--command-run-path="/Users/ogiron" \
 	--max-concurrency=8 

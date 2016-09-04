@@ -1,6 +1,6 @@
-ferrariprocessor-*
-ferrariprocessor
-ferrariprocessor.tgz
+ferrariworker-*
+ferrariworker
+ferrariworker.tgz
 .test_repository_*
 .DS_Store
 .idea
