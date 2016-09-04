@@ -97,22 +97,6 @@ func TestProcessorSuccessfulJobs(t *testing.T) {
 	processor.Start()
 }
 
-func TestFailingJob(t *testing.T) {
-	adapterMock := createProcessorAdapterMock(t, failingJobs)
-	failProcessorAdapterMock := &failProcessorAdapterMock{adapterMock}
-
-	processorConfig := &Config{
-		Adapter:     failProcessorAdapterMock,
-		Command:     `cd nonexistingdir"`,
-		CommandPath: ".",
-		Concurrency: 1,
-		WaitTimeout: 200,
-	}
-
-	processorProcessor := New(processorConfig)
-	processorProcessor.Start()
-}
-
 func TestNewMessage(t *testing.T) {
 	messageStr := "hello world"
 	m := NewMessage([]byte(messageStr), nil)
