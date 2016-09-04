@@ -14,7 +14,7 @@ EXTRA_BUILD_VARS := CGO_ENABLED=0 GOARCH=amd64
 SOURCE_DIRS := $(shell go list ./... | grep -v /vendor/)
 
 
-all: test 
+all: test binaries
 
 build-release: container
 
@@ -36,19 +36,11 @@ image: binaries
 binaries: binary-darwin binary-linux
 
 binary-darwin:
-	@-rm -rf build/dist/darwin
-	@-mkdir -p build/dist/darwin
-	GOOS=darwin $(EXTRA_BUILD_VARS) go build -ldflags "$(LD_FLAGS)" -o build/dist/darwin/$(NAME)
+	GOOS=darwin $(EXTRA_BUILD_VARS) go build -ldflags "$(LD_FLAGS)" -o $(NAME)-darwin
 
 binary-linux:
-	@-rm -rf build/dist/linux
-	@-mkdir -p build/dist/linux
-	GOOS=linux $(EXTRA_BUILD_VARS) go build -ldflags "$(LD_FLAGS)" -o build/dist/linux/$(NAME)
+	GOOS=linux $(EXTRA_BUILD_VARS) go build -ldflags "$(LD_FLAGS)" -o $(NAME)-linux
 
-packages: test brew rpm
-	@echo "rpm and OSX tarball done"
 
-brew: binary-darwin
-	@tar -czf build/dist/ferrariprocessor.tar.gz -C build/dist/darwin ferrariprocessor
 
 
