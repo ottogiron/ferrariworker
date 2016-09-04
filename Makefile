@@ -1,6 +1,6 @@
 # Meta info
 NAME := ferrariprocessor
-VERSION := 0.4.1
+VERSION := 0.4.2
 MAINTAINER := "Otto Giron <ottog2486@gmail.com"
 SOURCE_URL := https://github.com/ottogiron/ferrariprocessor.git
 DATE := $(shell date -u +%Y%m%d.%H%M%S)
