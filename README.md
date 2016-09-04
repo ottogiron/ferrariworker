@@ -45,14 +45,15 @@ hello task: 2ms
 2016/05/26 10:48:07 Thread 3 from 8 end processing took 136.934854ms
 
 ```
-## Processors
-Processors are the sources from which you can process jobs e.g rabbit.
+## Processor Adapters
+
+Processors  Adapters are in charge of consuming jobs from different sources.
 
 ```
-ferrariworker process <processor_name> <[flags]>
+ferrariworker process <processor_adapter_name> <[flags]>
 ```
 
-### Available Processors
+### Available Processor Adapters
 
 * [RabbitMQ](processor/rabbit)
 
@@ -117,14 +118,14 @@ type Adapter interface {
 }
 ```
 
-#### Processor Factory
-An processor factory is interface which defines a "New" method that the ferrari core will use to create an instance of an specific adapter.
+#### Processor Adapter Factory
+An processor adapter factory is interface which defines a "New" method that the ferrari core will use to create an instance of an specific adapter.
 "New" receives   a "Config" object which contains all the configuration values provided by the user.
 
 ```
 //Factory defines a actory from stream adapters
 type Factory interface {
-	New(config *Config) Adapter
+	New(config *AdapterConfig) Adapter
 }
 ```
 #### Processor Factory Registration
@@ -167,7 +168,7 @@ func init() {
 }
 ``` 
 
-#### Processor Configuration Schema
+#### Processor Adapters Configuration Schema
 Every adapters has to define their configuration metadata, that means the adapter name/identifier and all the related configuration fields.
 This information is necessary for the adapter to be registered as processor command, and to be able to parse the configuration values that will be provided to the factory.
 
