@@ -10,6 +10,7 @@ deploy:
   file:
     - ferrariprocessor-darwin
     - ferrariprocessor-linux
-    - ferrariprocessor-windows
+  skip_cleanup: true
+
   on:
     repo: ottogiron/ferrariprocessor
