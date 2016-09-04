@@ -2,6 +2,7 @@
 
 ## Creates a continuous stream of jobs to be processed by custom programs in any language from different  sources. 
 
+[![Build Status](https://travis-ci.org/ottogiron/ferrariprocessor.svg?branch=master)](https://travis-ci.org/ottogiron/ferrariprocessor)
 ## Example
 This example shows jobs processing from rabbitmq using a Node.js script as job processor.
 
