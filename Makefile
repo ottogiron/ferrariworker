@@ -14,7 +14,7 @@ EXTRA_BUILD_VARS := CGO_ENABLED=0 GOARCH=amd64
 SOURCE_DIRS := $(shell go list ./... | grep -v /vendor/)
 
 
-all: test binaries
+all: test 
 
 build-release: container
 
