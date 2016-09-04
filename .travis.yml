@@ -14,4 +14,4 @@ deploy:
 
   on:
     tags: true
-    go: 1.6.3
+    go: '1.6.3'
