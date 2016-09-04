@@ -3,8 +3,7 @@ package rabbit
 import (
 	"fmt"
 
-	"github.com/ottogiron/ferraristream/stream"
-
+	"github.com/ottogiron/ferrariprocessor/processor"
 	"github.com/streadway/amqp"
 )
 
@@ -35,29 +34,28 @@ const (
 
 type factory struct{}
 
-func (f *factory) New(config stream.Config) stream.Adapter {
-
-	return newRabbitStreamAdapter(config)
+func (f *factory) New(config processor.AdapterConfig) processor.Adapter {
+	return newRabbitProcessorAdapter(config)
 }
 
 //Register registers a stream adapter to  be used by the process command
 func Register() {
-	stream.RegisterStreamAdapterFactory(&factory{}, schema)
+	processor.RegisterProcessorAdapterFactory(&factory{}, schema)
 }
 
-type rabbitStreamAdapter struct {
-	config     stream.Config
+type rabbitProcessorAdapter struct {
+	config     processor.AdapterConfig
 	connection *amqp.Connection
 }
 
-//NewRabbitStreamAdapter creates a new rabbitStreamAdapter
-func newRabbitStreamAdapter(config stream.Config) stream.Adapter {
-	return &rabbitStreamAdapter{
+//NewRabbitProcessorAdapter creates a new rabbitStreamAdapter
+func newRabbitProcessorAdapter(config processor.AdapterConfig) processor.Adapter {
+	return &rabbitProcessorAdapter{
 		config: config,
 	}
 }
 
-func (m *rabbitStreamAdapter) Open() error {
+func (m *rabbitProcessorAdapter) Open() error {
 	queueURL := m.config.GetString(uriKey)
 	con, err := amqp.Dial(queueURL)
 	if err != nil {
@@ -67,11 +65,11 @@ func (m *rabbitStreamAdapter) Open() error {
 	return nil
 }
 
-func (m *rabbitStreamAdapter) Close() error {
+func (m *rabbitProcessorAdapter) Close() error {
 	return m.connection.Close()
 }
 
-func (m *rabbitStreamAdapter) StreamMessages(msgChannel chan<- *stream.Message) error {
+func (m *rabbitProcessorAdapter) Messages(msgChannel chan<- *processor.Message) error {
 	ch, err := m.connection.Channel()
 
 	if err != nil {
@@ -122,14 +120,14 @@ func (m *rabbitStreamAdapter) StreamMessages(msgChannel chan<- *stream.Message) 
 	}
 
 	for d := range msgs {
-		msgChannel <- stream.NewMessage(d.Body, d)
+		msgChannel <- processor.NewMessage(d.Body, d)
 	}
 
 	return nil
 }
 
 //RabbitResultHanlder post process when the job is already done
-func (m *rabbitStreamAdapter) ResultHandler(jobResult *stream.JobResult, message *stream.Message) error {
+func (m *rabbitProcessorAdapter) ResultHandler(jobResult *processor.JobResult, message *processor.Message) error {
 
 	return nil
 }

@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/ottogiron/ferraristream/stream"
+	"github.com/ottogiron/ferrariprocessor/processor"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -26,11 +26,11 @@ const (
 // processCmd represents the process command
 var processCmd = &cobra.Command{
 	Use:   "process",
-	Short: "Process a stream of jobs",
-	Long: `Process a stream of jobs based on custom configuration:
+	Short: "Process of jobs",
+	Long: `Process a  jobs based on custom configuration:
 
 e.g.
-	ferraristream process \
+	ferrariprocessor process \
 	--command="node hello.js" \
 	--command-run-path="/Users/ogiron" \
 	--max-concurrency=8 
@@ -55,7 +55,7 @@ func init() {
 }
 
 func initAdaptersSubCommands(command *cobra.Command) {
-	schemas := stream.StreamAdapterSchemas()
+	schemas := processor.AdapterSchemas()
 	for _, schema := range schemas {
 		subCmd := &cobra.Command{
 			Use:   schema.Name,
@@ -67,15 +67,15 @@ func initAdaptersSubCommands(command *cobra.Command) {
 		for _, schemaProperty := range schema.Properties {
 			viperPropertyName := viperConfigKey(schema.Name, schemaProperty.Name)
 			switch schemaProperty.Type {
-			case stream.PropertyTypeString:
+			case processor.PropertyTypeString:
 				value := cast.ToString(schemaProperty.Default)
 				subCmd.Flags().String(schemaProperty.Name, value, schemaProperty.Description)
 				viper.BindPFlag(viperPropertyName, subCmd.Flags().Lookup(schemaProperty.Name))
-			case stream.PropertyTypeInt:
+			case processor.PropertyTypeInt:
 				value := cast.ToInt(schemaProperty.Default)
 				subCmd.Flags().Int(schemaProperty.Name, value, schemaProperty.Description)
 				viper.BindPFlag(viperPropertyName, subCmd.Flags().Lookup(schemaProperty.Name))
-			case stream.PropertyTypeBool:
+			case processor.PropertyTypeBool:
 				value := cast.ToBool(schemaProperty.Default)
 				subCmd.Flags().Bool(schemaProperty.Name, value, schemaProperty.Description)
 				viper.BindPFlag(viperPropertyName, subCmd.Flags().Lookup(schemaProperty.Name))
@@ -87,10 +87,10 @@ func initAdaptersSubCommands(command *cobra.Command) {
 
 func adapterCommandAction(cmd *cobra.Command, args []string) {
 
-	factory, err := stream.StreamAdapterFactory(cmd.Name())
+	factory, err := processor.AdapterFactory(cmd.Name())
 
 	if err != nil {
-		log.Fatalf("There was an error creating starting the streaming %s", err)
+		log.Fatalf("There was an error jcreating starting the processing %s", err)
 		return
 	}
 
@@ -103,26 +103,26 @@ func adapterCommandAction(cmd *cobra.Command, args []string) {
 		log.Fatalf("Couldn't parse configuration for %s %s", cmd.Name(), err)
 	}
 	adapter := factory.New(config)
-	processorConfig := &stream.ProcessorConfig{
+	processorConfig := &processor.Config{
 		Adapter:     adapter,
 		Command:     command,
 		CommandPath: commandPath,
 		Concurrency: concurrency,
 		WaitTimeout: waitTimeout,
 	}
-	sp := stream.NewStreamProcessor(processorConfig)
+	sp := processor.New(processorConfig)
 	err = sp.Start()
 	if err != nil {
-		log.Fatalf("Could not start the stream processing %s", err)
+		log.Fatalf("Could not start  processing %s", err)
 	}
 }
 
-func parseAdapterConfiguration(name string) (stream.Config, error) {
-	schema, err := stream.StreamAdapterSchema(name)
+func parseAdapterConfiguration(name string) (processor.AdapterConfig, error) {
+	schema, err := processor.AdapterSchema(name)
 	if err != nil {
 		return nil, fmt.Errorf("Couldn't load schema for adapter %s", name)
 	}
-	config := stream.NewConfig()
+	config := processor.NewAdapterConfig()
 	for _, propertyDefinition := range schema.Properties {
 		viperPropertyName := viperConfigKey(name, propertyDefinition.Name)
 		config.Set(propertyDefinition.Name, viper.Get(viperPropertyName))

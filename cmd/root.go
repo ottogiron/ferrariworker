@@ -12,11 +12,11 @@ var cfgFile string
 
 //RootCmd This represents the base command when called without any subcommands
 var RootCmd = &cobra.Command{
-	Use:   "ferraristream",
-	Short: "Process an stream of jobs using programs in any language",
-	Long: `Process an stream of jobs using programs in any language
+	Use:   "ferrariprocessor",
+	Short: "Process  jobs using programs in any language",
+	Long: `Process  jobs using programs in any language
 
-ENF_QUEUE_URL=amqp://guest:guest@localhost:5672/ ENF_COMMAND="node hello.js" ENF_COMMAND_RUN_PATH="/Users/ogiron" ENF_MAX_CONCURRENCY=8 ferraristream process
+ENF_QUEUE_URL=amqp://guest:guest@localhost:5672/ ENF_COMMAND="node hello.js" ENF_COMMAND_RUN_PATH="/Users/ogiron" ENF_MAX_CONCURRENCY=8 ferrariprocessor process
 `,
 }
 
@@ -36,7 +36,7 @@ func init() {
 	// Cobra supports Persistent Flags, which, if defined here,
 	// will be global for your application.
 
-	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.ferraristream.yaml)")
+	RootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.ferrariprocessor.yaml)")
 
 }
 
@@ -46,9 +46,9 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	}
 
-	viper.SetConfigName(".ferraristream") // name of config file (without extension)
-	viper.AddConfigPath("$HOME")          // adding home directory as first search path
-	viper.AutomaticEnv()                  // read in environment variables that match
+	viper.SetConfigName(".ferrarip") // name of config file (without extension)
+	viper.AddConfigPath("$HOME")     // adding home directory as first search path
+	viper.AutomaticEnv()             // read in environment variables that match
 
 	// If a config file is found, read it in.
 	if err := viper.ReadInConfig(); err == nil {

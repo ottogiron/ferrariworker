@@ -1,4 +1,4 @@
-package stream
+package processor
 
 import (
 	"errors"
@@ -15,43 +15,43 @@ var successfullJobs = []Message{
 	Message{Payload: []byte("message 6")},
 }
 
-func createStreamAdapterMock(t *testing.T, messages []Message) *streamAdapterMock {
-	return &streamAdapterMock{t, messages}
+func createProcessorAdapterMock(t *testing.T, messages []Message) *processorAdapterMock {
+	return &processorAdapterMock{t, messages}
 }
 
 var failingJobs = []Message{
 	Message{Payload: []byte("message for failing job 1")},
 }
 
-type streamAdapterFactoryMock struct {
+type processorAdapterFactoryMock struct {
 	t *testing.T
 }
 
-func (s *streamAdapterMock) New(config *Config) Adapter {
-	return createStreamAdapterMock(s.t, successfullJobs)
+func (s *processorAdapterMock) New(config *Config) Adapter {
+	return createProcessorAdapterMock(s.t, successfullJobs)
 }
 
-type streamAdapterMock struct {
+type processorAdapterMock struct {
 	t        *testing.T
 	messages []Message
 }
 
-func (s *streamAdapterMock) Open() error {
+func (s *processorAdapterMock) Open() error {
 	return nil
 }
 
-func (s *streamAdapterMock) Close() error {
+func (s *processorAdapterMock) Close() error {
 	return nil
 }
 
-func (s *streamAdapterMock) StreamMessages(msgChannel chan<- *Message) error {
+func (s *processorAdapterMock) Messages(msgChannel chan<- *Message) error {
 	for _, message := range s.messages {
 		msgChannel <- &message
 	}
 	return nil
 }
 
-func (s *streamAdapterMock) ResultHandler(jobResult *JobResult, message *Message) error {
+func (s *processorAdapterMock) ResultHandler(jobResult *JobResult, message *Message) error {
 	if !jobResult.Success {
 		s.t.Fatalf("Running should be successful %s", jobResult.Output)
 		return fmt.Errorf("Running should be successful %s", jobResult.Output)
@@ -59,12 +59,12 @@ func (s *streamAdapterMock) ResultHandler(jobResult *JobResult, message *Message
 	return nil
 }
 
-type failStreamAdapterMock struct {
-	*streamAdapterMock
+type failProcessorAdapterMock struct {
+	*processorAdapterMock
 }
 
 type failAdapterOpenCloseMock struct {
-	*streamAdapterMock
+	*processorAdapterMock
 }
 
 func (s failAdapterOpenCloseMock) Open() error {
@@ -75,7 +75,7 @@ func (s failAdapterOpenCloseMock) Close() error {
 	return errors.New("There was an erro closing the connection")
 }
 
-func (s *failStreamAdapterMock) ResultHandler(jobResult *JobResult, message *Message) error {
+func (s *failProcessorAdapterMock) ResultHandler(jobResult *JobResult, message *Message) error {
 	if jobResult.Success {
 		s.t.Fatalf("Running job should be unsuccesful %s", jobResult.Output)
 	}
@@ -84,33 +84,33 @@ func (s *failStreamAdapterMock) ResultHandler(jobResult *JobResult, message *Mes
 
 func TestProcessorSuccessfulJobs(t *testing.T) {
 
-	streamAdapterMock := &streamAdapterMock{t, successfullJobs}
-	processorConfig := &ProcessorConfig{
-		Adapter:     streamAdapterMock,
+	processorAdapterMock := &processorAdapterMock{t, successfullJobs}
+	processorConfig := &Config{
+		Adapter:     processorAdapterMock,
 		Command:     `echo "Hello successful test"`,
 		CommandPath: ".",
 		Concurrency: 1,
 		WaitTimeout: 200,
 	}
 
-	streamProcessor := NewStreamProcessor(processorConfig)
-	streamProcessor.Start()
+	processor := New(processorConfig)
+	processor.Start()
 }
 
 func TestFailingJob(t *testing.T) {
-	adapterMock := createStreamAdapterMock(t, failingJobs)
-	failStreamAdapterMock := &failStreamAdapterMock{adapterMock}
+	adapterMock := createProcessorAdapterMock(t, failingJobs)
+	failProcessorAdapterMock := &failProcessorAdapterMock{adapterMock}
 
-	processorConfig := &ProcessorConfig{
-		Adapter:     failStreamAdapterMock,
+	processorConfig := &Config{
+		Adapter:     failProcessorAdapterMock,
 		Command:     `cd nonexistingdir"`,
 		CommandPath: ".",
 		Concurrency: 1,
 		WaitTimeout: 200,
 	}
 
-	streamProcessor := NewStreamProcessor(processorConfig)
-	streamProcessor.Start()
+	processorProcessor := New(processorConfig)
+	processorProcessor.Start()
 }
 
 func TestNewMessage(t *testing.T) {
@@ -123,31 +123,31 @@ func TestNewMessage(t *testing.T) {
 }
 
 func TestAdapterOpenError(t *testing.T) {
-	adapterMock := createStreamAdapterMock(t, successfullJobs)
+	adapterMock := createProcessorAdapterMock(t, successfullJobs)
 	failAdapterOpenCloseMock := &failAdapterOpenCloseMock{adapterMock}
-	processorConfig := &ProcessorConfig{
+	processorConfig := &Config{
 		Adapter: failAdapterOpenCloseMock,
 	}
-	sp := NewStreamProcessor(processorConfig)
+	sp := New(processorConfig)
 	err := sp.Start()
 	if err == nil {
 		t.Error("Expected connection open to fail")
 	}
 }
 
-func TestRegisterStreamAdapterFactory(t *testing.T) {
+func TestRegisterProcessorAdapterFactory(t *testing.T) {
 
-	cs := &ConfigurationSchema{
+	cs := &AdapterConfigurationSchema{
 		Name: "test",
 	}
 
-	err := RegisterStreamAdapterFactory(nil, cs)
+	err := RegisterProcessorAdapterFactory(nil, cs)
 
 	if err != nil {
 		t.Errorf("The first factory should be registered correctly for %s", cs.Name)
 	}
 
-	err = RegisterStreamAdapterFactory(nil, cs)
+	err = RegisterProcessorAdapterFactory(nil, cs)
 
 	if err == nil {
 		t.Errorf("The registration should fail for %s", cs.Name)
@@ -155,11 +155,11 @@ func TestRegisterStreamAdapterFactory(t *testing.T) {
 }
 
 func TestGetConfigurationSchemas(t *testing.T) {
-	RegisterStreamAdapterFactory(nil, &ConfigurationSchema{
+	RegisterProcessorAdapterFactory(nil, &AdapterConfigurationSchema{
 		Name: "test",
 	})
 
-	schemas := StreamAdapterSchemas()
+	schemas := AdapterSchemas()
 
 	slen := len(schemas)
 	if slen != 1 {
@@ -167,10 +167,10 @@ func TestGetConfigurationSchemas(t *testing.T) {
 	}
 }
 
-func TestGetStreamAdapterSchema(t *testing.T) {
-	RegisterStreamAdapterFactory(nil, &ConfigurationSchema{Name: "test"})
+func TestGetProcessorAdapterSchema(t *testing.T) {
+	RegisterProcessorAdapterFactory(nil, &AdapterConfigurationSchema{Name: "test"})
 
-	schema, _ := StreamAdapterSchema("test")
+	schema, _ := AdapterSchema("test")
 
 	if schema.Name != "test" {
 		t.Errorf("expected schema name to be 'test' was %s", schema.Name)

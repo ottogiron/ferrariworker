@@ -1,4 +1,4 @@
-package stream
+package processor
 
 import (
 	"encoding/base64"
@@ -21,45 +21,45 @@ type Processor interface {
 
 type configurationRegistry struct {
 	factory             Factory
-	configurationSchema *ConfigurationSchema
+	configurationSchema *AdapterConfigurationSchema
 }
 
-//RegisterStreamAdapterFactory registers a new factory for creating adapters
-func RegisterStreamAdapterFactory(factory Factory, configurationSchema *ConfigurationSchema) error {
-	if factoryRegistry[configurationSchema.Name] != nil {
-		return fmt.Errorf("The factory already exists %s", configurationSchema.Name)
+//RegisterProcessorAdapterFactory registers a new factory for creating adapters
+func RegisterProcessorAdapterFactory(factory Factory, adapterConfigurationSchema *AdapterConfigurationSchema) error {
+	if factoryRegistry[adapterConfigurationSchema.Name] != nil {
+		return fmt.Errorf("The factory already exists %s", adapterConfigurationSchema.Name)
 	}
-	factoryRegistry[configurationSchema.Name] = &configurationRegistry{factory, configurationSchema}
+	factoryRegistry[adapterConfigurationSchema.Name] = &configurationRegistry{factory, adapterConfigurationSchema}
 	return nil
 }
 
-//StreamAdapterFactory returns a factory for a registered adapter
-func StreamAdapterFactory(factoryName string) (Factory, error) {
+//AdapterFactory returns a factory for a registered adapter
+func AdapterFactory(factoryName string) (Factory, error) {
 	if factoryRegistry[factoryName] == nil {
-		return nil, fmt.Errorf("The adapter %s is not registered stream cannot be created", factoryName)
+		return nil, fmt.Errorf("The adapter %s is not registered Processor cannot be created", factoryName)
 	}
 	return factoryRegistry[factoryName].factory, nil
 }
 
-//StreamAdapterSchema returns the configuration schema for the adapter factory
-func StreamAdapterSchema(factoryName string) (*ConfigurationSchema, error) {
+//AdapterSchema returns the configuration schema for the adapter factory
+func AdapterSchema(factoryName string) (*AdapterConfigurationSchema, error) {
 	if factoryRegistry[factoryName] == nil {
-		return nil, fmt.Errorf("The adapter %s is not registered stream cannot be created", factoryName)
+		return nil, fmt.Errorf("The adapter %s is not registered Processor cannot be created", factoryName)
 	}
 	return factoryRegistry[factoryName].configurationSchema, nil
 }
 
-//GetStreamAdapterSchemas returns the schemas for all the available adapters
-func StreamAdapterSchemas() []*ConfigurationSchema {
-	configurationSchemas := []*ConfigurationSchema{}
+//AdapterSchemas returns the schemas for all the available adapters
+func AdapterSchemas() []*AdapterConfigurationSchema {
+	configurationSchemas := []*AdapterConfigurationSchema{}
 	for _, registry := range factoryRegistry {
 		configurationSchemas = append(configurationSchemas, registry.configurationSchema)
 	}
 	return configurationSchemas
 }
 
-type streamProcessor struct {
-	config *ProcessorConfig
+type processor struct {
+	config *Config
 }
 
 type job struct {
@@ -91,8 +91,8 @@ type JobResult struct {
 //JobResultHanlder Handler for the result of a processed Job
 type JobResultHanlder func(jobResult *JobResult, message *Message)
 
-//ProcessorConfig configuration for a stream processor
-type ProcessorConfig struct {
+//Config configuration for a Processor processor
+type Config struct {
 	Adapter     Adapter
 	Command     string
 	CommandPath string
@@ -100,22 +100,23 @@ type ProcessorConfig struct {
 	WaitTimeout time.Duration
 }
 
-//NewStreamProcessor creates a new instance of stream processor
-func NewStreamProcessor(processorConfig *ProcessorConfig) Processor {
-	return &streamProcessor{processorConfig}
+//New creates a new instance of Processor processor
+func New(config *Config) Processor {
+	return &processor{config}
 }
 
-func (sp *streamProcessor) Start() error {
+//Start starts processing
+func (sp *processor) Start() error {
 	//open the connection
 	err := sp.config.Adapter.Open()
 	if err != nil {
-		return errors.New("Couldn't open the stream connection")
+		return errors.New("Couldn't open the Processor connection")
 	}
 	defer sp.config.Adapter.Close()
 	wg := sync.WaitGroup{}
 	wg.Add(sp.config.Concurrency)
 	msgs := make(chan *Message)
-	go sp.config.Adapter.StreamMessages(msgs)
+	go sp.config.Adapter.Messages(msgs)
 	for i := 0; i < sp.config.Concurrency; i++ {
 		go func(threadNumber int) {
 			for {

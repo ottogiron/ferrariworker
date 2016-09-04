@@ -1,121 +1,121 @@
 package rabbit
 
-import "github.com/ottogiron/ferraristream/stream"
+import "github.com/ottogiron/ferrariprocessor/processor"
 
-var schema = &stream.ConfigurationSchema{
+var schema = &processor.AdapterConfigurationSchema{
 	Name:             "rabbit",
-	ShortDescription: "Streams jobs from rabbitmq",
-	LongDescription:  "Streams jobs from rabbibmq",
-	Properties: []stream.ConfigurationProperty{
-		stream.ConfigurationProperty{
+	ShortDescription: "processors jobs from rabbitmq",
+	LongDescription:  "processors jobs from rabbibmq",
+	Properties: []processor.AdapterConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        uriKey,
-			Type:        stream.PropertyTypeString,
+			Type:        processor.PropertyTypeString,
 			Description: "Rabbit instance uri e.g. amqp://guest:guest@localhost:5672/",
 			Default:     "amqp://guest:guest@localhost:5672/",
 			Optional:    true,
 		},
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        queueNameKey,
-			Type:        stream.PropertyTypeString,
+			Type:        processor.PropertyTypeString,
 			Description: "Rabbit queue name",
 			Optional:    false,
 		},
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        queueDurableKey,
-			Type:        stream.PropertyTypeBool,
+			Type:        processor.PropertyTypeBool,
 			Description: "Queue durable",
 			Default:     false,
 			Optional:    true,
 		},
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        queueDeleteWhenUsedKey,
-			Type:        stream.PropertyTypeBool,
+			Type:        processor.PropertyTypeBool,
 			Description: "Queue delete queue when used",
 			Default:     false,
 			Optional:    true,
 		},
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        queueExclusiveKey,
-			Type:        stream.PropertyTypeBool,
+			Type:        processor.PropertyTypeBool,
 			Description: "Queue exclusive",
 			Default:     false,
 			Optional:    true,
 		},
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        queueNoWaitKey,
-			Type:        stream.PropertyTypeBool,
+			Type:        processor.PropertyTypeBool,
 			Description: "Queue no wait",
 			Default:     false,
 			Optional:    true,
 		},
 		//Consumer configurations
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        consumerTagKey,
-			Type:        stream.PropertyTypeString,
+			Type:        processor.PropertyTypeString,
 			Description: "Consumer tag",
 			Default:     "",
 			Optional:    true,
 		},
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        consumerAutoAckKey,
-			Type:        stream.PropertyTypeBool,
+			Type:        processor.PropertyTypeBool,
 			Description: "Consumer Auto ACK",
 			Default:     false,
 			Optional:    true,
 		},
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        consumerNoLocalKey,
-			Type:        stream.PropertyTypeBool,
+			Type:        processor.PropertyTypeBool,
 			Description: "Consumer no local",
 			Default:     false,
 			Optional:    true,
 		},
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        consumerNoWaitKey,
-			Type:        stream.PropertyTypeBool,
+			Type:        processor.PropertyTypeBool,
 			Description: "Consumer no wait",
 			Default:     false,
 			Optional:    true,
 		},
 		//Exchange configurations
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        exchangeNameKey,
-			Type:        stream.PropertyTypeString,
+			Type:        processor.PropertyTypeString,
 			Description: "Exchange name. If exchange name is empty all other exchange flags are ignored",
 			Default:     "",
 			Optional:    true,
 		},
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        exchangeTypeKey,
-			Type:        stream.PropertyTypeString,
+			Type:        processor.PropertyTypeString,
 			Description: "Exchange type - direct|fanout|topic|x-custom",
 			Default:     "direct",
 			Optional:    true,
 		},
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        exchangeDurableKey,
-			Type:        stream.PropertyTypeBool,
+			Type:        processor.PropertyTypeBool,
 			Description: "Exchange durable",
 			Default:     true,
 			Optional:    true,
 		},
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        exchangeDeleteWhenCompleteKey,
-			Type:        stream.PropertyTypeBool,
+			Type:        processor.PropertyTypeBool,
 			Description: "Exchange delete when complete",
 			Default:     false,
 			Optional:    true,
 		},
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        exchangeInternalKey,
-			Type:        stream.PropertyTypeBool,
+			Type:        processor.PropertyTypeBool,
 			Description: "Exchange internal ",
 			Default:     false,
 			Optional:    true,
 		},
-		stream.ConfigurationProperty{
+		processor.AdapterConfigurationProperty{
 			Name:        exchangeNowaitKey,
-			Type:        stream.PropertyTypeBool,
+			Type:        processor.PropertyTypeBool,
 			Description: "Exchange no wait",
 			Default:     false,
 			Optional:    true,

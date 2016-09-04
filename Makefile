@@ -1,15 +1,15 @@
 # Meta info
-NAME := ferraristream
+NAME := ferrariprocessor
 VERSION := 0.4.0
 MAINTAINER := "Otto Giron <ottog2486@gmail.com"
-SOURCE_URL := https://github.com/ottogiron/ferraristream.git
+SOURCE_URL := https://github.com/ottogiron/ferrariprocessor.git
 DATE := $(shell date -u +%Y%m%d.%H%M%S)
 COMMIT_ID := $(shell git rev-parse --short HEAD)
 GIT_REPO := $(shell git config --get remote.origin.url)
 # Go tools flags
-LD_FLAGS := -X 	github.com/ottogiron/ferraristream/cmd.buildVersion=$(VERSION)
-LD_FLAGS += -X github.com/ottogiron/ferraristream/cmd.buildCommit=$(COMMIT_ID)
-LD_FLAGS += -X github.com/ottogiron/ferraristream/cmd.buildDate=$(DATE)
+LD_FLAGS := -X 	github.com/ottogiron/ferrariprocessor/cmd.buildVersion=$(VERSION)
+LD_FLAGS += -X github.com/ottogiron/ferrariprocessor/cmd.buildCommit=$(COMMIT_ID)
+LD_FLAGS += -X github.com/ottogiron/ferrariprocessor/cmd.buildDate=$(DATE)
 EXTRA_BUILD_VARS := CGO_ENABLED=0 GOARCH=amd64
 SOURCE_DIRS := $(shell go list ./... | grep -v /vendor/)
 
@@ -49,6 +49,6 @@ packages: test brew rpm
 	@echo "rpm and OSX tarball done"
 
 brew: binary-darwin
-	@tar -czf build/dist/ferraristream.tar.gz -C build/dist/darwin ferraristream
+	@tar -czf build/dist/ferrariprocessor.tar.gz -C build/dist/darwin ferrariprocessor
 
 
