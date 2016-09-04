@@ -23,7 +23,7 @@ lint:
 	@go vet $(SOURCE_DIRS)
 
 test: lint
-	 @go test -v $(SOURCE_DIRS) -cover 
+	 @go test -v $(SOURCE_DIRS) -cover -bench . 
 
 cover: 
 	gocov test $(SOURCE_DIRS) | gocov-html > coverage.html && open coverage.html

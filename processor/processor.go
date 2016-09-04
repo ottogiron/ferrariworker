@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -122,12 +121,9 @@ func (sp *processor) Start() error {
 			for {
 				select {
 				case m := <-msgs:
-					start := time.Now()
 					j := &job{sp.config.Command, sp.config.CommandPath, m.Payload}
 					jobResult := processJob(j)
 					sp.config.Adapter.ResultHandler(jobResult, m)
-					elapsed := time.Since(start)
-					log.Printf("Thread %d from %d end processing took %s", threadNumber+1, sp.config.Concurrency, elapsed)
 				case <-time.After(sp.config.WaitTimeout * time.Millisecond):
 					wg.Done()
 					return
