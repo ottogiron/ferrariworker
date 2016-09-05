@@ -1,6 +1,6 @@
 # Meta info
 NAME := ferrariworker
-VERSION := 0.4.2
+VERSION := 0.5.1
 MAINTAINER := "Otto Giron <ottog2486@gmail.com"
 SOURCE_URL := https://github.com/ottogiron/ferrariworker.git
 DATE := $(shell date -u +%Y%m%d.%H%M%S)
