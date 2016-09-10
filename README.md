@@ -117,6 +117,18 @@ type Message struct {
 }
 ```
 
+### Processor JobResult
+
+A result of a processed Job
+
+```
+//JobResult Represents the result of a processed Job
+type JobResult struct {
+	Status JobStatus // JobStatusSuccess | JobStatusFailed
+	Output []byte
+}
+```
+
 ### Processor Adapters
 An adapter is an interface that defines the functionallity for processing jobs from any source.
 

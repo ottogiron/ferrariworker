@@ -79,7 +79,7 @@ func (s failAdapterOpenCloseMock) Close() error {
 }
 
 func (s *failProcessorAdapterMock) ResultHandler(jobResult *JobResult, message Message) error {
-	if jobResult.Status != JobStatusSuccess {
+	if jobResult.Status != JobStatusFailed {
 		s.t.Errorf("Running job should be unsuccesful %s", jobResult.Output)
 	}
 	return nil
@@ -98,6 +98,22 @@ func TestProcessorSuccessfulJobs(t *testing.T) {
 
 	processor := New(processorConfig)
 	processor.Start()
+}
+
+func TestFailingJob(t *testing.T) {
+	adapterMock := createProcessorAdapterMock(t, failingJobs)
+	failStreamAdapterMock := &failProcessorAdapterMock{adapterMock}
+
+	processorConfig := &Config{
+		Adapter:     failStreamAdapterMock,
+		Command:     `cd nonexistingdir"`,
+		CommandPath: ".",
+		Concurrency: 1,
+		WaitTimeout: 200,
+	}
+
+	streamProcessor := New(processorConfig)
+	streamProcessor.Start()
 }
 
 func TestNewMessage(t *testing.T) {
