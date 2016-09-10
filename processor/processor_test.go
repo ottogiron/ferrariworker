@@ -140,6 +140,24 @@ func TestProcessorFailingJob(t *testing.T) {
 	processor.Start()
 }
 
+func BenchmarkProcessorFailedJobs(b *testing.B) {
+	adapterMock := createProcessorAdapterMock(b, failingJobs)
+	failStreamAdapterMock := &failProcessorAdapterMock{adapterMock}
+
+	processorConfig := &Config{
+		Adapter:     failStreamAdapterMock,
+		Command:     `cd nonexistingdir"`,
+		CommandPath: ".",
+		Concurrency: 1,
+		WaitTimeout: 200,
+	}
+	w := &dummyWriter{}
+	processor := New(processorConfig, w, w)
+	for n := 0; n < b.N; n++ {
+		processor.Start()
+	}
+}
+
 func TestNewMessage(t *testing.T) {
 	messageStr := "hello world"
 	m := Message{[]byte(messageStr), nil}
