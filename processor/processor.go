@@ -16,8 +16,8 @@ import (
 type JobStatus int
 
 const (
-	JobStatusSuccess JobStatus = iota
-	JobStatusFailed
+	JobStatusSuccess JobStatus = 0
+	JobStatusFailed  JobStatus = 1
 )
 
 var factoryRegistry = map[string]*configurationRegistry{}
@@ -34,6 +34,8 @@ type configurationRegistry struct {
 
 type processor struct {
 	config *Config
+	stdout io.Writer
+	stderr io.Writer
 }
 
 type job struct {
@@ -67,8 +69,15 @@ type Config struct {
 }
 
 //New creates a new instance of Processor processor
-func New(config *Config) Processor {
-	return &processor{config}
+func New(config *Config, stdout io.Writer, stderr io.Writer) Processor {
+	if stdout == nil {
+		stdout = os.Stdout
+	}
+
+	if stderr == nil {
+		stdout = os.Stderr
+	}
+	return &processor{config, stdout, stderr}
 }
 
 //Start starts processing
@@ -93,7 +102,7 @@ func (sp *processor) Start() error {
 				select {
 				case m := <-msgs:
 					j := job{sp.config.Command, sp.config.CommandPath, m.Payload}
-					jobResult := processJob(j)
+					jobResult := sp.processJob(j)
 					sp.config.Adapter.ResultHandler(jobResult, m)
 				case <-time.After(sp.config.WaitTimeout * time.Millisecond):
 					wg.Done()
@@ -107,34 +116,39 @@ func (sp *processor) Start() error {
 	return nil
 }
 
-func processJob(job job) *JobResult {
+func (sp *processor) processJob(job job) *JobResult {
 	encodedPayload := base64.StdEncoding.EncodeToString(job.payload)
 	cmdStr := job.command + " " + string(encodedPayload)
 	var output bytes.Buffer
-	cmd := prepareCommand(cmdStr, job.commandPath, &output)
+	cmd := sp.prepareCommand(cmdStr, job.commandPath, &output)
 	err := cmd.Run()
-	jobResult := &JobResult{}
-	jobResult.Output = output.Bytes()
+	status := JobStatusSuccess
 	if err != nil {
-		jobResult.Status = JobStatusFailed
+		status = JobStatusFailed
+		errMsg := fmt.Sprintf("-Failed to run command  %s %s", job.command, err)
+		output.WriteString(errMsg)
 	} else {
-		jobResult.Status = JobStatusSuccess
 		if success := cmd.ProcessState.Success(); !success {
-			jobResult.Status = JobStatusFailed
+			status = JobStatusFailed
 		}
 	}
+	jobResult := &JobResult{
+		Status: status,
+		Output: output.Bytes(),
+	}
+
 	return jobResult
 }
 
 //prepareCommand executes a command outputs to stdout
-func prepareCommand(commandStr string, path string, output io.Writer) *exec.Cmd {
+func (sp *processor) prepareCommand(commandStr string, path string, output io.Writer) *exec.Cmd {
 	cmdTokens := strings.Fields(commandStr)
 	commandName := cmdTokens[:1]
 	args := cmdTokens[1:]
 	os.Chdir(path)
 	cmd := exec.Command(commandName[0], args...)
-	stdout := io.MultiWriter(output, os.Stdout)
-	stderr := io.MultiWriter(output, os.Stderr)
+	stdout := io.MultiWriter(output, sp.stdout)
+	stderr := io.MultiWriter(output, sp.stderr)
 	cmd.Stdout = stdout
 	cmd.Stderr = stderr
 	return cmd

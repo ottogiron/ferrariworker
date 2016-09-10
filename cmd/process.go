@@ -110,7 +110,8 @@ func adapterCommandAction(cmd *cobra.Command, args []string) {
 		Concurrency: concurrency,
 		WaitTimeout: waitTimeout,
 	}
-	sp := processor.New(processorConfig)
+	//Default stdout and stder to os.Stdout and os.Stderr
+	sp := processor.New(processorConfig, nil, nil)
 	err = sp.Start()
 	if err != nil {
 		log.Fatalf("Could not start  processing %s", err)

@@ -1,6 +1,7 @@
 package processor
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"testing"
@@ -15,8 +16,14 @@ var successfullJobs = []Message{
 	Message{Payload: []byte("message 6")},
 }
 
-func createProcessorAdapterMock(t *testing.T, messages []Message) *processorAdapterMock {
-	return &processorAdapterMock{t: t, messages: messages}
+type dummyWriter struct{}
+
+func (dw *dummyWriter) Write(p []byte) (n int, err error) {
+	return 1, nil
+}
+
+func createProcessorAdapterMock(t testing.TB, messages []Message) *processorAdapterMock {
+	return &processorAdapterMock{tb: t, messages: messages}
 }
 
 var failingJobs = []Message{
@@ -28,11 +35,11 @@ type processorAdapterFactoryMock struct {
 }
 
 func (s *processorAdapterMock) New(config *Config) Adapter {
-	return createProcessorAdapterMock(s.t, successfullJobs)
+	return createProcessorAdapterMock(s.tb, successfullJobs)
 }
 
 type processorAdapterMock struct {
-	t        *testing.T
+	tb       testing.TB
 	messages []Message
 }
 
@@ -56,8 +63,8 @@ func (s *processorAdapterMock) Messages() (<-chan Message, error) {
 
 func (s *processorAdapterMock) ResultHandler(jobResult *JobResult, message Message) error {
 	if jobResult.Status != JobStatusSuccess {
-		s.t.Errorf("Running should be successful %s", jobResult.Output)
-		return fmt.Errorf("Running should be successful %s", jobResult.Output)
+		s.tb.Errorf("Running should be successful  status %d output %s", jobResult.Status, jobResult.Output)
+		return fmt.Errorf("Running should be successful  status %d output %s", jobResult.Status, jobResult.Output)
 	}
 	return nil
 }
@@ -80,14 +87,28 @@ func (s failAdapterOpenCloseMock) Close() error {
 
 func (s *failProcessorAdapterMock) ResultHandler(jobResult *JobResult, message Message) error {
 	if jobResult.Status != JobStatusFailed {
-		s.t.Errorf("Running job should be unsuccesful %s", jobResult.Output)
+		s.tb.Errorf("Running job should be unsuccesful %s", jobResult.Output)
 	}
 	return nil
 }
 
 func TestProcessorSuccessfulJobs(t *testing.T) {
 
-	processorAdapterMock := &processorAdapterMock{t: t, messages: successfullJobs}
+	processorAdapterMock := &processorAdapterMock{tb: t, messages: successfullJobs}
+	processorConfig := &Config{
+		Adapter:     processorAdapterMock,
+		Command:     `echo "Hello successful test"`,
+		CommandPath: ".",
+		Concurrency: 1,
+		WaitTimeout: 200,
+	}
+	var w bytes.Buffer
+	processor := New(processorConfig, &w, &w)
+	processor.Start()
+}
+
+func BenchmarkProcessorSuccessfulJobs(b *testing.B) {
+	processorAdapterMock := &processorAdapterMock{tb: b, messages: successfullJobs}
 	processorConfig := &Config{
 		Adapter:     processorAdapterMock,
 		Command:     `echo "Hello successful test"`,
@@ -96,11 +117,14 @@ func TestProcessorSuccessfulJobs(t *testing.T) {
 		WaitTimeout: 200,
 	}
 
-	processor := New(processorConfig)
-	processor.Start()
+	var w bytes.Buffer
+	processor := New(processorConfig, &w, &w)
+	for n := 0; n < b.N; n++ {
+		processor.Start()
+	}
 }
 
-func TestFailingJob(t *testing.T) {
+func TestProcessorFailingJob(t *testing.T) {
 	adapterMock := createProcessorAdapterMock(t, failingJobs)
 	failStreamAdapterMock := &failProcessorAdapterMock{adapterMock}
 
@@ -111,9 +135,9 @@ func TestFailingJob(t *testing.T) {
 		Concurrency: 1,
 		WaitTimeout: 200,
 	}
-
-	streamProcessor := New(processorConfig)
-	streamProcessor.Start()
+	w := &dummyWriter{}
+	processor := New(processorConfig, w, w)
+	processor.Start()
 }
 
 func TestNewMessage(t *testing.T) {
@@ -131,7 +155,7 @@ func TestAdapterOpenError(t *testing.T) {
 	processorConfig := &Config{
 		Adapter: failAdapterOpenCloseMock,
 	}
-	sp := New(processorConfig)
+	sp := New(processorConfig, nil, nil)
 	err := sp.Start()
 	if err == nil {
 		t.Error("Expected connection open to fail")
