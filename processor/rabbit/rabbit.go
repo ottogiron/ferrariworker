@@ -38,9 +38,8 @@ func (f *factory) New(config processor.AdapterConfig) processor.Adapter {
 	return newRabbitProcessorAdapter(config)
 }
 
-//Register registers a stream adapter to  be used by the process command
-func Register() {
-	processor.RegisterProcessorAdapterFactory(&factory{}, schema)
+func init() {
+	processor.RegisterAdapterFactory(&factory{}, schema)
 }
 
 type rabbitProcessorAdapter struct {

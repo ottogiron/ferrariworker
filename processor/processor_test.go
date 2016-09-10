@@ -119,19 +119,19 @@ func TestAdapterOpenError(t *testing.T) {
 	}
 }
 
-func TestRegisterProcessorAdapterFactory(t *testing.T) {
+func TestRegisterAdapterFactory(t *testing.T) {
 
 	cs := &AdapterConfigurationSchema{
 		Name: "test",
 	}
 
-	err := RegisterProcessorAdapterFactory(nil, cs)
+	err := RegisterAdapterFactory(nil, cs)
 
 	if err != nil {
 		t.Errorf("The first factory should be registered correctly for %s", cs.Name)
 	}
 
-	err = RegisterProcessorAdapterFactory(nil, cs)
+	err = RegisterAdapterFactory(nil, cs)
 
 	if err == nil {
 		t.Errorf("The registration should fail for %s", cs.Name)
@@ -139,7 +139,7 @@ func TestRegisterProcessorAdapterFactory(t *testing.T) {
 }
 
 func TestGetConfigurationSchemas(t *testing.T) {
-	RegisterProcessorAdapterFactory(nil, &AdapterConfigurationSchema{
+	RegisterAdapterFactory(nil, &AdapterConfigurationSchema{
 		Name: "test",
 	})
 
@@ -152,7 +152,7 @@ func TestGetConfigurationSchemas(t *testing.T) {
 }
 
 func TestGetProcessorAdapterSchema(t *testing.T) {
-	RegisterProcessorAdapterFactory(nil, &AdapterConfigurationSchema{Name: "test"})
+	RegisterAdapterFactory(nil, &AdapterConfigurationSchema{Name: "test"})
 
 	schema, _ := AdapterSchema("test")
 

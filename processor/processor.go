@@ -23,8 +23,8 @@ type configurationRegistry struct {
 	configurationSchema *AdapterConfigurationSchema
 }
 
-//RegisterProcessorAdapterFactory registers a new factory for creating adapters
-func RegisterProcessorAdapterFactory(factory Factory, adapterConfigurationSchema *AdapterConfigurationSchema) error {
+//RegisterAdapterFactory registers a new factory for creating adapters
+func RegisterAdapterFactory(factory Factory, adapterConfigurationSchema *AdapterConfigurationSchema) error {
 	if factoryRegistry[adapterConfigurationSchema.Name] != nil {
 		return fmt.Errorf("The factory already exists %s", adapterConfigurationSchema.Name)
 	}

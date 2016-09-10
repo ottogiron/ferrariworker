@@ -128,44 +128,28 @@ type Factory interface {
 	New(config *AdapterConfig) Adapter
 }
 ```
-#### Processor Factory Registration
-By convention every adapter must implement a package level function called Register, which will be in charge of registering the adapter factory.
+#### Processor Adapter Factory Registration
+
+Every Adapter should register itself in the processor adapter registry
 
 Example: 
 
 ```
-//Register registers a processor adapter to  be used by the process command
-func Register() {
-	configSchema := &processor.ConfigurationSchema{
-		Name:             "rabbit",
-		ShortDescription: "Executes jobs coming from rabbit",
-		LongDescription:  "Executes jobs coming from rabbit",
-		Properties: []processor.ConfigurationProperty{
-			processor.ConfigurationProperty{
-				Name:        hostPropertyKey,
-				Type:        processor.PropertyTypeString,
-				Description: "Rabbit host url e.g. amqp://guest:guest@localhost:5672/",
-				Default:     "amqp://guest:guest@localhost:5672/",
-				Optional:    false,
-			},
-		},
-	}
-	processor.RegisterProcessordapterFactory(&factory{}, configSchema)
+func init() {
+	processor.RegisterAdapterFactory(&factory{}, schema)
 }
-```
 
-This function needs to be called explictly in cmd/modules.go
+Then the adapter has to be imported in ***cmd/modules.go** using the blank identifier for the processor to be registered
 
 
-```
+
 package cmd
 
-import "github.com/ottogiron/ferrariworker/processor/rabbit"
+import (
+  _ "github.com/ottogiron/ferrariworker/processor/rabbit"
+  )
 
-func init() {
-	rabbit.Register()
-  // Other adapters registration
-}
+
 ``` 
 
 #### Processor Adapters Configuration Schema
