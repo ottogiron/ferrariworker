@@ -68,11 +68,12 @@ func (m *rabbitProcessorAdapter) Close() error {
 	return m.connection.Close()
 }
 
-func (m *rabbitProcessorAdapter) Messages(msgChannel chan<- *processor.Message) error {
+func (m *rabbitProcessorAdapter) Messages() (<-chan processor.Message, error) {
+
 	ch, err := m.connection.Channel()
 
 	if err != nil {
-		return fmt.Errorf("Could not open a channel  %s", err)
+		return nil, fmt.Errorf("Could not open a channel  %s", err)
 	}
 	defer ch.Close()
 
@@ -87,7 +88,7 @@ func (m *rabbitProcessorAdapter) Messages(msgChannel chan<- *processor.Message) 
 			nil,
 		)
 		if err != nil {
-			return fmt.Errorf("Could not create an exchange %s", err)
+			return nil, fmt.Errorf("Could not create an exchange %s", err)
 		}
 	}
 
@@ -101,7 +102,7 @@ func (m *rabbitProcessorAdapter) Messages(msgChannel chan<- *processor.Message) 
 	)
 
 	if err != nil {
-		return fmt.Errorf("Could not declare the queue %s", err)
+		return nil, fmt.Errorf("Could not declare the queue %s", err)
 	}
 
 	msgs, err := ch.Consume(
@@ -115,18 +116,20 @@ func (m *rabbitProcessorAdapter) Messages(msgChannel chan<- *processor.Message) 
 	)
 
 	if err != nil {
-		return fmt.Errorf("Could not start consuming queue %s", err)
+		return nil, fmt.Errorf("Could not start consuming queue %s", err)
 	}
 
-	for d := range msgs {
-		msgChannel <- processor.NewMessage(d.Body, d)
-	}
+	msgChannel := make(chan processor.Message)
+	go func() {
+		for d := range msgs {
+			msgChannel <- processor.Message{Payload: d.Body, OriginalMessage: d}
+		}
+	}()
 
-	return nil
+	return msgChannel, nil
 }
 
 //RabbitResultHanlder post process when the job is already done
-func (m *rabbitProcessorAdapter) ResultHandler(jobResult *processor.JobResult, message *processor.Message) error {
-
+func (m *rabbitProcessorAdapter) ResultHandler(jobResult processor.JobResult, message processor.Message) error {
 	return nil
 }

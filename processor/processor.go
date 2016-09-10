@@ -73,14 +73,6 @@ type Message struct {
 	OriginalMessage interface{}
 }
 
-//NewMessage creates a new instance of a message
-func NewMessage(payload []byte, originalMessage interface{}) *Message {
-	return &Message{
-		payload,
-		originalMessage,
-	}
-}
-
 //JobResult Represents the result of a processed Job
 type JobResult struct {
 	Success bool
@@ -114,14 +106,15 @@ func (sp *processor) Start() error {
 	defer sp.config.Adapter.Close()
 	wg := sync.WaitGroup{}
 	wg.Add(sp.config.Concurrency)
-	msgs := make(chan *Message)
-	go sp.config.Adapter.Messages(msgs)
+
+	msgs, _ := sp.config.Adapter.Messages()
+
 	for i := 0; i < sp.config.Concurrency; i++ {
 		go func(threadNumber int) {
 			for {
 				select {
 				case m := <-msgs:
-					j := &job{sp.config.Command, sp.config.CommandPath, m.Payload}
+					j := job{sp.config.Command, sp.config.CommandPath, m.Payload}
 					jobResult := processJob(j)
 					sp.config.Adapter.ResultHandler(jobResult, m)
 				case <-time.After(sp.config.WaitTimeout * time.Millisecond):
@@ -136,11 +129,11 @@ func (sp *processor) Start() error {
 	return nil
 }
 
-func processJob(job *job) *JobResult {
+func processJob(job job) JobResult {
 	encodedPayload := base64.StdEncoding.EncodeToString(job.payload)
 	cmdStr := job.command + " " + string(encodedPayload)
 	cmd, _ := executeCommand(cmdStr, job.commandPath)
-	jobResult := new(JobResult)
+	jobResult := JobResult{}
 	jobResult.Success = cmd.ProcessState.Success()
 	jobResult.Output, _ = cmd.Output()
 	return jobResult

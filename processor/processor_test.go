@@ -16,7 +16,7 @@ var successfullJobs = []Message{
 }
 
 func createProcessorAdapterMock(t *testing.T, messages []Message) *processorAdapterMock {
-	return &processorAdapterMock{t, messages}
+	return &processorAdapterMock{t: t, messages: messages}
 }
 
 var failingJobs = []Message{
@@ -44,14 +44,17 @@ func (s *processorAdapterMock) Close() error {
 	return nil
 }
 
-func (s *processorAdapterMock) Messages(msgChannel chan<- *Message) error {
-	for _, message := range s.messages {
-		msgChannel <- &message
-	}
-	return nil
+func (s *processorAdapterMock) Messages() (<-chan Message, error) {
+	msgChannel := make(chan Message)
+	go func() {
+		for _, message := range s.messages {
+			msgChannel <- message
+		}
+	}()
+	return msgChannel, nil
 }
 
-func (s *processorAdapterMock) ResultHandler(jobResult *JobResult, message *Message) error {
+func (s *processorAdapterMock) ResultHandler(jobResult JobResult, message Message) error {
 	if !jobResult.Success {
 		s.t.Fatalf("Running should be successful %s", jobResult.Output)
 		return fmt.Errorf("Running should be successful %s", jobResult.Output)
@@ -75,7 +78,7 @@ func (s failAdapterOpenCloseMock) Close() error {
 	return errors.New("There was an erro closing the connection")
 }
 
-func (s *failProcessorAdapterMock) ResultHandler(jobResult *JobResult, message *Message) error {
+func (s *failProcessorAdapterMock) ResultHandler(jobResult JobResult, message Message) error {
 	if jobResult.Success {
 		s.t.Fatalf("Running job should be unsuccesful %s", jobResult.Output)
 	}
@@ -84,7 +87,7 @@ func (s *failProcessorAdapterMock) ResultHandler(jobResult *JobResult, message *
 
 func TestProcessorSuccessfulJobs(t *testing.T) {
 
-	processorAdapterMock := &processorAdapterMock{t, successfullJobs}
+	processorAdapterMock := &processorAdapterMock{t: t, messages: successfullJobs}
 	processorConfig := &Config{
 		Adapter:     processorAdapterMock,
 		Command:     `echo "Hello successful test"`,
@@ -99,7 +102,7 @@ func TestProcessorSuccessfulJobs(t *testing.T) {
 
 func TestNewMessage(t *testing.T) {
 	messageStr := "hello world"
-	m := NewMessage([]byte(messageStr), nil)
+	m := Message{[]byte(messageStr), nil}
 
 	if string(m.Payload) != messageStr {
 		t.Fatalf("Message should be %s was %s", messageStr, string(m.Payload))
