@@ -130,6 +130,6 @@ func (m *rabbitProcessorAdapter) Messages() (<-chan processor.Message, error) {
 }
 
 //RabbitResultHanlder post process when the job is already done
-func (m *rabbitProcessorAdapter) ResultHandler(jobResult processor.JobResult, message processor.Message) error {
+func (m *rabbitProcessorAdapter) ResultHandler(jobResult *processor.JobResult, message processor.Message) error {
 	return nil
 }

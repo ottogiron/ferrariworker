@@ -54,9 +54,9 @@ func (s *processorAdapterMock) Messages() (<-chan Message, error) {
 	return msgChannel, nil
 }
 
-func (s *processorAdapterMock) ResultHandler(jobResult JobResult, message Message) error {
-	if !jobResult.Success {
-		s.t.Fatalf("Running should be successful %s", jobResult.Output)
+func (s *processorAdapterMock) ResultHandler(jobResult *JobResult, message Message) error {
+	if jobResult.Status != JobStatusSuccess {
+		s.t.Errorf("Running should be successful %s", jobResult.Output)
 		return fmt.Errorf("Running should be successful %s", jobResult.Output)
 	}
 	return nil
@@ -78,9 +78,9 @@ func (s failAdapterOpenCloseMock) Close() error {
 	return errors.New("There was an erro closing the connection")
 }
 
-func (s *failProcessorAdapterMock) ResultHandler(jobResult JobResult, message Message) error {
-	if jobResult.Success {
-		s.t.Fatalf("Running job should be unsuccesful %s", jobResult.Output)
+func (s *failProcessorAdapterMock) ResultHandler(jobResult *JobResult, message Message) error {
+	if jobResult.Status != JobStatusSuccess {
+		s.t.Errorf("Running job should be unsuccesful %s", jobResult.Output)
 	}
 	return nil
 }

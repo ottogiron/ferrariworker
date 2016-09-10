@@ -126,7 +126,7 @@ type Adapter interface {
 	Open() error
 	Close() error
   Messages() (<-chan Message, error)
-	ResultHandler(jobResult *JobResult, message *Message) error
+	ResultHandler(jobResult *JobResult, message Message) error
 }
 ```
 
