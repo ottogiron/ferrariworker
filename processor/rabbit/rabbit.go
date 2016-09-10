@@ -124,6 +124,7 @@ func (m *rabbitProcessorAdapter) Messages() (<-chan processor.Message, error) {
 		for d := range msgs {
 			msgChannel <- processor.Message{Payload: d.Body, OriginalMessage: d}
 		}
+		close(msgChannel)
 	}()
 
 	return msgChannel, nil
