@@ -2,8 +2,10 @@ package processor
 
 import (
 	"bytes"
+	"encoding/base64"
 	"errors"
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -65,6 +67,11 @@ func (s *processorAdapterMock) ResultHandler(jobResult *JobResult, message Messa
 	if jobResult.Status != JobStatusSuccess {
 		s.tb.Errorf("Running should be successful  status %d output %s", jobResult.Status, jobResult.Output)
 		return fmt.Errorf("Running should be successful  status %d output %s", jobResult.Status, jobResult.Output)
+	}
+	originalMessage := base64.StdEncoding.EncodeToString(message.Payload)
+	outputMessage := string(jobResult.Output)
+	if !strings.Contains(outputMessage, originalMessage) {
+		s.tb.Errorf("outputMessage => %s expected to contain %s", outputMessage, originalMessage)
 	}
 	return nil
 }
