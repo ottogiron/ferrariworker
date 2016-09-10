@@ -105,6 +105,18 @@ This flags apply to all the available processors
 
 ## Development
 
+### Processor Message
+
+Represents a generic processor message
+
+```
+//Message A generic message to be processed by a job
+type Message struct {
+	Payload         []byte
+	OriginalMessage interface{}
+}
+```
+
 ### Processor Adapters
 An adapter is an interface that defines the functionallity for processing jobs from any source.
 
@@ -113,7 +125,7 @@ An adapter is an interface that defines the functionallity for processing jobs f
 type Adapter interface {
 	Open() error
 	Close() error
-	Messages(chan<- *Message) error
+  Messages() (<-chan Message, error)
 	ResultHandler(jobResult *JobResult, message *Message) error
 }
 ```
