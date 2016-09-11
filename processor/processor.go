@@ -102,7 +102,6 @@ func (sp *processor) Start() error {
 				select {
 				case m, ok := <-msgs:
 					if ok {
-						m = <-msgs
 						j := job{sp.config.Command, sp.config.CommandPath, m.Payload}
 						jobResult := sp.processJob(j)
 						sp.config.Adapter.ResultHandler(jobResult, m)
@@ -114,7 +113,6 @@ func (sp *processor) Start() error {
 					wg.Done()
 					return
 				}
-
 			}
 		}()
 	}
