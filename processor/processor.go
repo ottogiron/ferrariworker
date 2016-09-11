@@ -3,7 +3,6 @@ package processor
 import (
 	"bytes"
 	"encoding/base64"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -85,7 +84,7 @@ func (sp *processor) Start() error {
 	//open the connection
 	err := sp.config.Adapter.Open()
 	if err != nil {
-		return errors.New("Couldn't open the Processor connection")
+		return fmt.Errorf("Failed to open the processor Adapter connection %s", err)
 	}
 	defer sp.config.Adapter.Close()
 	wg := sync.WaitGroup{}
