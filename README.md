@@ -138,7 +138,7 @@ An adapter is an interface that defines the functionallity for processing jobs f
 type Adapter interface {
 	Open() error
 	Close() error
-  Messages() (<-chan Message, error)
+  Messages(context.Context) (<-chan Message, error)
 	ResultHandler(jobResult *JobResult, message Message) error
 }
 ```
