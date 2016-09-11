@@ -187,7 +187,7 @@ Please check the [RabbitMQ](processor/rabbit/rabbit.go) adapter for an example o
 
 ### Prerequisites
 
-Go 1.6 +
+Go 1.7 +
 
 ### Makefile
 
