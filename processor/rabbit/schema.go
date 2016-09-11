@@ -15,6 +15,19 @@ var schema = &processor.AdapterConfigurationSchema{
 			Optional:    true,
 		},
 		processor.AdapterConfigurationProperty{
+			Name:        bindingKey,
+			Type:        processor.PropertyTypeString,
+			Description: "Binding Key",
+			Optional:    false,
+		},
+		processor.AdapterConfigurationProperty{
+			Name:        bindingWaitKey,
+			Type:        processor.PropertyTypeString,
+			Description: "Binding wait",
+			Default:     false,
+			Optional:    false,
+		},
+		processor.AdapterConfigurationProperty{
 			Name:        queueNameKey,
 			Type:        processor.PropertyTypeString,
 			Description: "Rabbit queue name",

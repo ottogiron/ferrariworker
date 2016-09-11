@@ -8,7 +8,9 @@ import (
 )
 
 const (
-	uriKey = "uri"
+	uriKey         = "uri"
+	bindingKey     = "binding-key"
+	bindingWaitKey = "binding-wait"
 	//Queue Arguments
 	queueNameKey           = "queue-name"
 	queueDurableKey        = "queue-durable"
@@ -103,6 +105,16 @@ func (m *rabbitProcessorAdapter) Messages() (<-chan processor.Message, error) {
 
 	if err != nil {
 		return nil, fmt.Errorf("Could not declare the queue %s", err)
+	}
+
+	if err = ch.QueueBind(
+		m.config.GetString(queueNameKey),    // name of the queue
+		m.config.GetString(bindingKey),      // bindingKey
+		m.config.GetString(exchangeNameKey), // sourceExchange
+		m.config.GetBoolean(bindingWaitKey), // noWait
+		nil, // arguments
+	); err != nil {
+		return nil, fmt.Errorf("Queue Bind: %s", err)
 	}
 
 	msgs, err := ch.Consume(
