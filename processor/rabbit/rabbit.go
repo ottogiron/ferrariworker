@@ -126,7 +126,6 @@ func (m *rabbitProcessorAdapter) Messages() (<-chan processor.Message, error) {
 		}
 		close(msgChannel)
 	}()
-
 	return msgChannel, nil
 }
 

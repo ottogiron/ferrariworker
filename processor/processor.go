@@ -100,14 +100,21 @@ func (sp *processor) Start() error {
 		go func() {
 			for {
 				select {
-				case m := <-msgs:
-					j := job{sp.config.Command, sp.config.CommandPath, m.Payload}
-					jobResult := sp.processJob(j)
-					sp.config.Adapter.ResultHandler(jobResult, m)
+				case m, ok := <-msgs:
+					if ok {
+						m = <-msgs
+						j := job{sp.config.Command, sp.config.CommandPath, m.Payload}
+						jobResult := sp.processJob(j)
+						sp.config.Adapter.ResultHandler(jobResult, m)
+					} else {
+						wg.Done()
+						return
+					}
 				case <-time.After(sp.config.WaitTimeout * time.Millisecond):
 					wg.Done()
 					return
 				}
+
 			}
 		}()
 	}
