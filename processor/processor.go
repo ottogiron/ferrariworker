@@ -90,7 +90,7 @@ func (sp *processor) Start() error {
 	defer sp.config.Adapter.Close()
 	wg := sync.WaitGroup{}
 	//Wait for the timeout once then call done to exit the processing
-	wg.Add(1)
+	wg.Add(sp.config.Concurrency)
 	msgs, err := sp.config.Adapter.Messages()
 	if err != nil {
 		return fmt.Errorf("Failed to get messages from adapter %s", err)
