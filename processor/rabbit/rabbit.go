@@ -1,6 +1,7 @@
 package rabbit
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/ottogiron/ferrariworker/processor"
@@ -70,14 +71,13 @@ func (m *rabbitProcessorAdapter) Close() error {
 	return m.connection.Close()
 }
 
-func (m *rabbitProcessorAdapter) Messages() (<-chan processor.Message, error) {
+func (m *rabbitProcessorAdapter) Messages(ctx context.Context) (<-chan processor.Message, error) {
 
 	ch, err := m.connection.Channel()
 
 	if err != nil {
 		return nil, fmt.Errorf("Could not open a channel  %s", err)
 	}
-	defer ch.Close()
 
 	if m.config.GetString(exchangeNameKey) != "" {
 		err := ch.ExchangeDeclare(
@@ -133,10 +133,17 @@ func (m *rabbitProcessorAdapter) Messages() (<-chan processor.Message, error) {
 
 	msgChannel := make(chan processor.Message)
 	go func() {
-		for d := range msgs {
-			msgChannel <- processor.Message{Payload: d.Body, OriginalMessage: d}
+		for {
+			select {
+			case d := <-msgs:
+				msgChannel <- processor.Message{Payload: d.Body, OriginalMessage: d}
+			case <-ctx.Done():
+				close(msgChannel)
+				ch.Close()
+				return
+			}
 		}
-		close(msgChannel)
+
 	}()
 	return msgChannel, nil
 }

@@ -2,6 +2,7 @@ package processor
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"fmt"
 	"io"
@@ -90,11 +91,13 @@ func (sp *processor) Start() error {
 	wg := sync.WaitGroup{}
 	//Wait for the timeout once then call done to exit the processing
 	wg.Add(sp.config.Concurrency)
-	msgs, err := sp.config.Adapter.Messages()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	msgs, err := sp.config.Adapter.Messages(ctx)
 	if err != nil {
 		return fmt.Errorf("Failed to get messages from adapter %s", err)
-	}
 
+	}
 	for i := 0; i < sp.config.Concurrency; i++ {
 		go func() {
 			for {

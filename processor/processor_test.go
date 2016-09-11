@@ -2,6 +2,7 @@ package processor
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -53,7 +54,7 @@ func (s *processorAdapterMock) Close() error {
 	return nil
 }
 
-func (s *processorAdapterMock) Messages() (<-chan Message, error) {
+func (s *processorAdapterMock) Messages(context context.Context) (<-chan Message, error) {
 	msgChannel := make(chan Message)
 	go func() {
 		for _, message := range s.messages {
