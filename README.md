@@ -173,7 +173,7 @@ func init() {
 
 ```
 
-Then the adapter has to be imported in ***cmd/modules.go** using the blank identifier for the processor to be registered
+Then the adapter has to be imported in ***cmd/modules.go*** using the blank identifier for the processor to be registered
 
 ```go
 package cmd
