@@ -150,8 +150,8 @@ type Adapter interface {
 
 #### Processor Adapter Factory
 
-An processor adapter factory is interface which defines a "New" method that the ferrari core will use to create an instance of an specific adapter.
-"New" receives   a "Config" object which contains all the configuration values provided by the user.
+An processor adapter factory is an interface which defines a "New" method the ferrari core will use to create an instance of an specific adapter.
+"New" receives a "Config" object which contains all the configuration values provided by the user.
 
 ```go
 //Factory defines a actory from stream adapters
@@ -185,7 +185,7 @@ import (
 
 #### Processor Adapters Configuration Schema
 
-Every adapters has to define their configuration metadata, that means the adapter name/identifier and all the related configuration fields.
+Every adapter has to define their configuration metadata, that means the adapter name/identifier and all the related configuration fields.
 This information is necessary for the adapter to be registered as processor command, and to be able to parse the configuration values that will be provided to the factory.
 
 Please check the [RabbitMQ](processor/rabbit/rabbit.go) adapter for an example of a working processor adapter.
