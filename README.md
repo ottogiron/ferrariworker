@@ -24,13 +24,15 @@ $ ferrariworker version
 
 ### Linux
 
+Download the linux tar file from the [releases](https://github.com/ottogiron/ferrariworker/releases) page
+
 ```bash
-# Download the tar file from the releases page https://github.com/ottogiron/ferrariworker/releases
-$ curl https://github.com/ottogiron/ferrariworker/releases/download/<version>/ferrariworker.linux-amd64.tar.gz
 # Extract the binary
 $ tar -xvf ferrariworker.linux-amd64.tar.gz
 # move it somewhere in your PATH e.g.
 $ mv ferrariworker /usr/local/bin
+# verify
+$ ferrariworker version
 ```
 
 ## Example
