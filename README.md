@@ -22,6 +22,17 @@ brew install ferrariworker
 $ ferrariworker version
 ```
 
+### Linux
+
+```bash
+# Download the tar file from the releases page https://github.com/ottogiron/ferrariworker/releases
+$ curl https://github.com/ottogiron/ferrariworker/releases/download/<version>/ferrariworker.linux-amd64.tar.gz
+# Extract the binary
+$ tar -xvf ferrariworker.linux-amd64.tar.gz
+# move it somewhere in your PATH e.g.
+$ mv ferrariworker /usr/local/bin
+```
+
 ## Example
 
 This example shows jobs processing from rabbitmq using a Node.js script as job processor.
