@@ -10,7 +10,7 @@
 
 ```bash
 # add tap
-$ brew tap ferrariworker https://github.com/ottogiron/homebrew-ferrariworker
+$ brew tap ottogiron/ferrariworker https://github.com/ottogiron/homebrew-ferrariworker
 
 # Update
 $ brew update
