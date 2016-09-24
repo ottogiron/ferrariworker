@@ -1,134 +1,134 @@
 package rabbit
 
-import "github.com/ottogiron/ferrariworker/processor"
+import "github.com/ottogiron/ferrariworker/config"
 
-var schema = &processor.AdapterConfigurationSchema{
+var schema = &config.AdapterConfigurationSchema{
 	Name:             "rabbit",
 	ShortDescription: "processors jobs from rabbitmq",
 	LongDescription:  "processors jobs from rabbibmq",
-	Properties: []processor.AdapterConfigurationProperty{
-		processor.AdapterConfigurationProperty{
+	Properties: []config.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        uriKey,
-			Type:        processor.PropertyTypeString,
+			Type:        config.PropertyTypeString,
 			Description: "Rabbit instance uri e.g. amqp://guest:guest@localhost:5672/",
 			Default:     "amqp://guest:guest@localhost:5672/",
 			Optional:    true,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        bindingKey,
-			Type:        processor.PropertyTypeString,
+			Type:        config.PropertyTypeString,
 			Description: "Binding Key",
 			Optional:    false,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        bindingWaitKey,
-			Type:        processor.PropertyTypeString,
+			Type:        config.PropertyTypeString,
 			Description: "Binding wait",
 			Default:     false,
 			Optional:    false,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        queueNameKey,
-			Type:        processor.PropertyTypeString,
+			Type:        config.PropertyTypeString,
 			Description: "Rabbit queue name",
 			Optional:    false,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        queueDurableKey,
-			Type:        processor.PropertyTypeBool,
+			Type:        config.PropertyTypeBool,
 			Description: "Queue durable",
 			Default:     false,
 			Optional:    true,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        queueDeleteWhenUsedKey,
-			Type:        processor.PropertyTypeBool,
+			Type:        config.PropertyTypeBool,
 			Description: "Queue delete queue when used",
 			Default:     false,
 			Optional:    true,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        queueExclusiveKey,
-			Type:        processor.PropertyTypeBool,
+			Type:        config.PropertyTypeBool,
 			Description: "Queue exclusive",
 			Default:     false,
 			Optional:    true,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        queueNoWaitKey,
-			Type:        processor.PropertyTypeBool,
+			Type:        config.PropertyTypeBool,
 			Description: "Queue no wait",
 			Default:     false,
 			Optional:    true,
 		},
 		//Consumer configurations
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        consumerTagKey,
-			Type:        processor.PropertyTypeString,
+			Type:        config.PropertyTypeString,
 			Description: "Consumer tag",
 			Default:     "",
 			Optional:    true,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        consumerAutoAckKey,
-			Type:        processor.PropertyTypeBool,
+			Type:        config.PropertyTypeBool,
 			Description: "Consumer Auto ACK",
 			Default:     false,
 			Optional:    true,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        consumerNoLocalKey,
-			Type:        processor.PropertyTypeBool,
+			Type:        config.PropertyTypeBool,
 			Description: "Consumer no local",
 			Default:     false,
 			Optional:    true,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        consumerNoWaitKey,
-			Type:        processor.PropertyTypeBool,
+			Type:        config.PropertyTypeBool,
 			Description: "Consumer no wait",
 			Default:     false,
 			Optional:    true,
 		},
 		//Exchange configurations
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        exchangeNameKey,
-			Type:        processor.PropertyTypeString,
+			Type:        config.PropertyTypeString,
 			Description: "Exchange name. If exchange name is empty all other exchange flags are ignored",
 			Default:     "",
 			Optional:    true,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        exchangeTypeKey,
-			Type:        processor.PropertyTypeString,
+			Type:        config.PropertyTypeString,
 			Description: "Exchange type - direct|fanout|topic|x-custom",
 			Default:     "direct",
 			Optional:    true,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        exchangeDurableKey,
-			Type:        processor.PropertyTypeBool,
+			Type:        config.PropertyTypeBool,
 			Description: "Exchange durable",
 			Default:     true,
 			Optional:    true,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        exchangeDeleteWhenCompleteKey,
-			Type:        processor.PropertyTypeBool,
+			Type:        config.PropertyTypeBool,
 			Description: "Exchange delete when complete",
 			Default:     false,
 			Optional:    true,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        exchangeInternalKey,
-			Type:        processor.PropertyTypeBool,
+			Type:        config.PropertyTypeBool,
 			Description: "Exchange internal ",
 			Default:     false,
 			Optional:    true,
 		},
-		processor.AdapterConfigurationProperty{
+		config.AdapterConfigurationProperty{
 			Name:        exchangeNowaitKey,
-			Type:        processor.PropertyTypeBool,
+			Type:        config.PropertyTypeBool,
 			Description: "Exchange no wait",
 			Default:     false,
 			Optional:    true,

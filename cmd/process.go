@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/ottogiron/ferrariworker/config"
 	"github.com/ottogiron/ferrariworker/processor"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -67,15 +68,15 @@ func initAdaptersSubCommands(command *cobra.Command) {
 		for _, schemaProperty := range schema.Properties {
 			viperPropertyName := viperConfigKey(schema.Name, schemaProperty.Name)
 			switch schemaProperty.Type {
-			case processor.PropertyTypeString:
+			case config.PropertyTypeString:
 				value := cast.ToString(schemaProperty.Default)
 				subCmd.Flags().String(schemaProperty.Name, value, schemaProperty.Description)
 				viper.BindPFlag(viperPropertyName, subCmd.Flags().Lookup(schemaProperty.Name))
-			case processor.PropertyTypeInt:
+			case config.PropertyTypeInt:
 				value := cast.ToInt(schemaProperty.Default)
 				subCmd.Flags().Int(schemaProperty.Name, value, schemaProperty.Description)
 				viper.BindPFlag(viperPropertyName, subCmd.Flags().Lookup(schemaProperty.Name))
-			case processor.PropertyTypeBool:
+			case config.PropertyTypeBool:
 				value := cast.ToBool(schemaProperty.Default)
 				subCmd.Flags().Bool(schemaProperty.Name, value, schemaProperty.Description)
 				viper.BindPFlag(viperPropertyName, subCmd.Flags().Lookup(schemaProperty.Name))
@@ -118,12 +119,12 @@ func adapterCommandAction(cmd *cobra.Command, args []string) {
 	}
 }
 
-func parseAdapterConfiguration(name string) (processor.AdapterConfig, error) {
+func parseAdapterConfiguration(name string) (config.AdapterConfig, error) {
 	schema, err := processor.AdapterSchema(name)
 	if err != nil {
 		return nil, fmt.Errorf("Couldn't load schema for adapter %s", name)
 	}
-	config := processor.NewAdapterConfig()
+	config := config.NewAdapterConfig()
 	for _, propertyDefinition := range schema.Properties {
 		viperPropertyName := viperConfigKey(name, propertyDefinition.Name)
 		config.Set(propertyDefinition.Name, viper.Get(viperPropertyName))

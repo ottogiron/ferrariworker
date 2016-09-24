@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+
+	"github.com/ottogiron/ferrariworker/config"
 )
 
 var successfullJobs = []Message{
@@ -190,7 +192,7 @@ func TestAdapterOpenError(t *testing.T) {
 
 func TestRegisterAdapterFactory(t *testing.T) {
 
-	cs := &AdapterConfigurationSchema{
+	cs := &config.AdapterConfigurationSchema{
 		Name: "test",
 	}
 
@@ -208,7 +210,7 @@ func TestRegisterAdapterFactory(t *testing.T) {
 }
 
 func TestGetConfigurationSchemas(t *testing.T) {
-	RegisterAdapterFactory(nil, &AdapterConfigurationSchema{
+	RegisterAdapterFactory(nil, &config.AdapterConfigurationSchema{
 		Name: "test",
 	})
 
@@ -221,7 +223,7 @@ func TestGetConfigurationSchemas(t *testing.T) {
 }
 
 func TestGetProcessorAdapterSchema(t *testing.T) {
-	RegisterAdapterFactory(nil, &AdapterConfigurationSchema{Name: "test"})
+	RegisterAdapterFactory(nil, &config.AdapterConfigurationSchema{Name: "test"})
 
 	schema, _ := AdapterSchema("test")
 

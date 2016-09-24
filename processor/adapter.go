@@ -1,6 +1,10 @@
 package processor
 
-import "context"
+import (
+	"context"
+
+	"github.com/ottogiron/ferrariworker/config"
+)
 
 //Adapter defines an messages source
 type Adapter interface {
@@ -12,5 +16,5 @@ type Adapter interface {
 
 //Factory defines a actory from message adapters
 type Factory interface {
-	New(config AdapterConfig) Adapter
+	New(config config.AdapterConfig) Adapter
 }

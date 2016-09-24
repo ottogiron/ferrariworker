@@ -11,6 +11,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/ottogiron/ferrariworker/config"
 )
 
 type JobStatus int
@@ -29,7 +31,7 @@ type Processor interface {
 
 type configurationRegistry struct {
 	factory             Factory
-	configurationSchema *AdapterConfigurationSchema
+	configurationSchema *config.AdapterConfigurationSchema
 }
 
 type processor struct {
@@ -164,7 +166,7 @@ func (sp *processor) prepareCommand(commandStr string, path string, output io.Wr
 }
 
 //RegisterAdapterFactory registers a new factory for creating adapters
-func RegisterAdapterFactory(factory Factory, adapterConfigurationSchema *AdapterConfigurationSchema) error {
+func RegisterAdapterFactory(factory Factory, adapterConfigurationSchema *config.AdapterConfigurationSchema) error {
 	if factoryRegistry[adapterConfigurationSchema.Name] != nil {
 		return fmt.Errorf("The factory already exists %s", adapterConfigurationSchema.Name)
 	}
@@ -181,7 +183,7 @@ func AdapterFactory(factoryName string) (Factory, error) {
 }
 
 //AdapterSchema returns the configuration schema for the adapter factory
-func AdapterSchema(factoryName string) (*AdapterConfigurationSchema, error) {
+func AdapterSchema(factoryName string) (*config.AdapterConfigurationSchema, error) {
 	if factoryRegistry[factoryName] == nil {
 		return nil, fmt.Errorf("The adapter %s is not registered Processor cannot be created", factoryName)
 	}
@@ -189,8 +191,8 @@ func AdapterSchema(factoryName string) (*AdapterConfigurationSchema, error) {
 }
 
 //AdapterSchemas returns the schemas for all the available adapters
-func AdapterSchemas() []*AdapterConfigurationSchema {
-	configurationSchemas := []*AdapterConfigurationSchema{}
+func AdapterSchemas() []*config.AdapterConfigurationSchema {
+	configurationSchemas := []*config.AdapterConfigurationSchema{}
 	for _, registry := range factoryRegistry {
 		configurationSchemas = append(configurationSchemas, registry.configurationSchema)
 	}

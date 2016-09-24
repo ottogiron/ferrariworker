@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/ottogiron/ferrariworker/config"
 	"github.com/ottogiron/ferrariworker/processor"
 	"github.com/streadway/amqp"
 )
@@ -37,7 +38,7 @@ const (
 
 type factory struct{}
 
-func (f *factory) New(config processor.AdapterConfig) processor.Adapter {
+func (f *factory) New(config config.AdapterConfig) processor.Adapter {
 	return newRabbitProcessorAdapter(config)
 }
 
@@ -46,12 +47,12 @@ func init() {
 }
 
 type rabbitProcessorAdapter struct {
-	config     processor.AdapterConfig
+	config     config.AdapterConfig
 	connection *amqp.Connection
 }
 
 //NewRabbitProcessorAdapter creates a new rabbitStreamAdapter
-func newRabbitProcessorAdapter(config processor.AdapterConfig) processor.Adapter {
+func newRabbitProcessorAdapter(config config.AdapterConfig) processor.Adapter {
 	return &rabbitProcessorAdapter{
 		config: config,
 	}
