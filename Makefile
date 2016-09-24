@@ -24,6 +24,9 @@ lint:
 test: lint
 	 @go test -v $(SOURCE_DIRS) -cover -bench . -race
 
+test-backend: lint 
+	@go test -v $(shell go list)/backend/$(BACKEND_NAME) -cover -bench . -race
+
 cover: 
 	gocov test $(SOURCE_DIRS) | gocov-html > coverage.html && open coverage.html
 	
