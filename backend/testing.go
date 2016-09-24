@@ -20,10 +20,8 @@ var persistCases = []struct {
 }
 
 func TestBackend(t *testing.T, backend Backend) {
-
 	for _, tc := range persistCases {
-		err := backend.Persist(tc.jobResult)
-
+		err := backend.Persist("worker_test", "job_test", tc.jobResult)
 		if err != nil {
 			t.Errorf("backend.Persist() => err:%s is not expected", err)
 		}

@@ -4,5 +4,5 @@ import "github.com/ottogiron/ferrariworker/processor"
 
 //Backend defines a data store for jobs to be persisted
 type Backend interface {
-	Persist([]processor.JobResult) error
+	Persist(workerId string, jobID string, jobResults []processor.JobResult) error
 }

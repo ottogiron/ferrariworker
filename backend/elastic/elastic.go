@@ -12,6 +12,6 @@ func New() backend.Backend {
 	return &elasticBackend{}
 }
 
-func (e *elasticBackend) Persist(jobResults []processor.JobResult) error {
+func (e *elasticBackend) Persist(workerID string, jobID string, jobResults []processor.JobResult) error {
 	return nil
 }
