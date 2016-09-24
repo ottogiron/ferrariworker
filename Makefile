@@ -12,6 +12,7 @@ LD_FLAGS += -X github.com/ottogiron/ferrariworker/cmd.buildCommit=$(COMMIT_ID)
 LD_FLAGS += -X github.com/ottogiron/ferrariworker/cmd.buildDate=$(DATE)
 EXTRA_BUILD_VARS := CGO_ENABLED=0 GOARCH=amd64
 SOURCE_DIRS ?= $(shell go list ./... | grep -v /vendor/)
+BACKEND_PATH := $(shell go list)/backend/$(BACKEND_NAME)
 
 all: test package-linux package-darwin
 
@@ -25,11 +26,13 @@ test: lint
 	 @go test -v $(SOURCE_DIRS) -cover -bench . -race
 
 test-backend: lint 
-	@go test -v $(shell go list)/backend/$(BACKEND_NAME) -cover -bench . -race
+	@go test -v $(BACKEND_PATH) -cover -bench . -race
 
 cover: 
 	gocov test $(SOURCE_DIRS) | gocov-html > coverage.html && open coverage.html
-	
+
+cover-backend:
+	gocov test $(BACKEND_PATH) | gocov-html > coverage.html && open coverage.html	
 
 image: binaries
 	docker-flow build -f docker/Dockerfile
