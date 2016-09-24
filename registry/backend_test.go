@@ -6,13 +6,13 @@ import (
 	"github.com/ottogiron/ferrariworker/config"
 )
 
-func TestRegisterAdapterFactory(t *testing.T) {
+func TestRegisterBackendFactory(t *testing.T) {
 
 	cs := &config.AdapterConfigurationSchema{
 		Name: "test",
 	}
 
-	err := RegisterAdapterFactory(nil, cs)
+	err := RegisterBackendFactory(nil, cs)
 
 	if err != nil {
 		t.Errorf("The first factory should be registered correctly for %s", cs.Name)
@@ -25,8 +25,8 @@ func TestRegisterAdapterFactory(t *testing.T) {
 	}
 }
 
-func TestGetConfigurationSchemas(t *testing.T) {
-	RegisterAdapterFactory(nil, &config.AdapterConfigurationSchema{
+func TestGetBackendSchemas(t *testing.T) {
+	RegisterBackendFactory(nil, &config.AdapterConfigurationSchema{
 		Name: "test",
 	})
 
@@ -38,8 +38,8 @@ func TestGetConfigurationSchemas(t *testing.T) {
 	}
 }
 
-func TestGetAdapterSchema(t *testing.T) {
-	RegisterAdapterFactory(nil, &config.AdapterConfigurationSchema{Name: "test"})
+func TestGetBackendrSchema(t *testing.T) {
+	RegisterBackendFactory(nil, &config.AdapterConfigurationSchema{Name: "test"})
 
 	schema, _ := AdapterSchema("test")
 
