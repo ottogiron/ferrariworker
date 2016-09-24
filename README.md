@@ -214,6 +214,18 @@ import (
 )
 ```
 
+### Backends
+
+Backends are in charge of storing and retreiving job results
+
+```go
+//Backend defines a data store for jobs to be persisted
+type Backend interface {
+  Persist(workerId string, jobID string, jobResults []processor.JobResult) error
+  JobResults(workerId string, jobID) ([]processor.JobResult, error)
+}
+```
+
 #### Processor Adapters Configuration Schema
 
 Every adapter has to define their configuration metadata, that means the adapter name/identifier and all the related configuration fields.
@@ -232,4 +244,7 @@ Go 1.7 +
 * **all**: Runs tests an binaries
 * **build-release**: Build a docker container and binaries
 * **lint**: Runs lint tools (fmt, vet)
-* **test**: Runs unit tests
+* **test**: Runs all unit tests
+* **test-backend**: Test a backend. e.g. ```TEST_ELASTIC_BACKEND=true BACKEND_NAME=elastic make test-backend```
+* **cover**: Runs, output and open a coverage report for all tests.
+* **cover-backend***: Runs, output and open a coverage report for a backend. e.g. ```TEST_ELASTIC_BACKEND=true BACKEND_NAME=elastic make cover-backend```
