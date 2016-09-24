@@ -11,8 +11,7 @@ LD_FLAGS := -X 	github.com/ottogiron/ferrariworker/cmd.buildVersion=$(VERSION)
 LD_FLAGS += -X github.com/ottogiron/ferrariworker/cmd.buildCommit=$(COMMIT_ID)
 LD_FLAGS += -X github.com/ottogiron/ferrariworker/cmd.buildDate=$(DATE)
 EXTRA_BUILD_VARS := CGO_ENABLED=0 GOARCH=amd64
-SOURCE_DIRS := $(shell go list ./... | grep -v /vendor/)
-TEST_ARGS := ""
+SOURCE_DIRS ?= $(shell go list ./... | grep -v /vendor/)
 
 all: test package-linux package-darwin
 
@@ -23,7 +22,7 @@ lint:
 	@go vet $(SOURCE_DIRS)
 
 test: lint
-	 @go test -v $(SOURCE_DIRS) -cover -bench . -race $(TEST_ARGS)
+	 @go test -v $(SOURCE_DIRS) -cover -bench . -race
 
 cover: 
 	gocov test $(SOURCE_DIRS) | gocov-html > coverage.html && open coverage.html
