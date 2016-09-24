@@ -214,6 +214,14 @@ import (
 )
 ```
 
+
+#### Processor Adapters Configuration Schema
+
+Every adapter has to define their configuration metadata, that means the adapter name/identifier and all the related configuration fields.
+This information is necessary for the adapter to be registered as processor command, and to be able to parse the configuration values that will be provided to the factory.
+
+Please check the [RabbitMQ](processor/rabbit/rabbit.go) adapter for an example of a working processor adapter.
+
 ### Backends
 
 Backends are in charge of storing and retreiving job results
@@ -225,13 +233,6 @@ type Backend interface {
   JobResults(workerId string, jobID) ([]processor.JobResult, error)
 }
 ```
-
-#### Processor Adapters Configuration Schema
-
-Every adapter has to define their configuration metadata, that means the adapter name/identifier and all the related configuration fields.
-This information is necessary for the adapter to be registered as processor command, and to be able to parse the configuration values that will be provided to the factory.
-
-Please check the [RabbitMQ](processor/rabbit/rabbit.go) adapter for an example of a working processor adapter.
 
 ### Prerequisites
 
