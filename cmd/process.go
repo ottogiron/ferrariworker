@@ -7,6 +7,7 @@ import (
 
 	"github.com/ottogiron/ferrariworker/config"
 	"github.com/ottogiron/ferrariworker/processor"
+	"github.com/ottogiron/ferrariworker/registry"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -56,7 +57,7 @@ func init() {
 }
 
 func initAdaptersSubCommands(command *cobra.Command) {
-	schemas := processor.AdapterSchemas()
+	schemas := registry.AdapterSchemas()
 	for _, schema := range schemas {
 		subCmd := &cobra.Command{
 			Use:   schema.Name,
@@ -88,7 +89,7 @@ func initAdaptersSubCommands(command *cobra.Command) {
 
 func adapterCommandAction(cmd *cobra.Command, args []string) {
 
-	factory, err := processor.AdapterFactory(cmd.Name())
+	factory, err := registry.AdapterFactory(cmd.Name())
 
 	if err != nil {
 		log.Fatalf("There was an error jcreating starting the processing %s", err)
@@ -120,7 +121,7 @@ func adapterCommandAction(cmd *cobra.Command, args []string) {
 }
 
 func parseAdapterConfiguration(name string) (config.AdapterConfig, error) {
-	schema, err := processor.AdapterSchema(name)
+	schema, err := registry.AdapterSchema(name)
 	if err != nil {
 		return nil, fmt.Errorf("Couldn't load schema for adapter %s", name)
 	}

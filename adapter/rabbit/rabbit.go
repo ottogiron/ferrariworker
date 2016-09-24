@@ -6,7 +6,7 @@ import (
 
 	"github.com/ottogiron/ferrariworker/adapter"
 	"github.com/ottogiron/ferrariworker/config"
-	"github.com/ottogiron/ferrariworker/processor"
+	"github.com/ottogiron/ferrariworker/registry"
 	"github.com/ottogiron/ferrariworker/worker"
 
 	"github.com/streadway/amqp"
@@ -46,7 +46,7 @@ func (f *factory) New(config config.AdapterConfig) adapter.Adapter {
 }
 
 func init() {
-	processor.RegisterAdapterFactory(&factory{}, schema)
+	registry.RegisterAdapterFactory(&factory{}, schema)
 }
 
 type rabbitProcessorAdapter struct {
