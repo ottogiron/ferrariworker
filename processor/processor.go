@@ -52,8 +52,10 @@ type Message struct {
 
 //JobResult Represents the result of a processed Job
 type JobResult struct {
-	Status JobStatus
-	Output []byte
+	Status    JobStatus
+	Output    []byte
+	StartTime time.Time
+	EndTime   time.Time
 }
 
 //JobResultHanlder Handler for the result of a processed Job
