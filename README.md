@@ -90,7 +90,7 @@ ferrariworker process <processor_adapter_name> <[flags]>
 
 ### Available Processor Adapters
 
-* [RabbitMQ](processor/rabbit)
+* [RabbitMQ](adapter/rabbit)
 
 ### Processing
 

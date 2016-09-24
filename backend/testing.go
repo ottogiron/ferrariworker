@@ -4,15 +4,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ottogiron/ferrariworker/processor"
+	"github.com/ottogiron/ferrariworker/worker"
 )
 
 var persistCases = []struct {
-	jobResult []processor.JobResult
+	jobResult []worker.JobResult
 }{
-	{[]processor.JobResult{
-		processor.JobResult{
-			Status:    processor.JobStatusSuccess,
+	{[]worker.JobResult{
+		worker.JobResult{
+			Status:    worker.JobStatusSuccess,
 			Output:    []byte{},
 			StartTime: time.Now(),
 			EndTime:   time.Now()},

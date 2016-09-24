@@ -4,8 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/ottogiron/ferrariworker/adapter"
 	"github.com/ottogiron/ferrariworker/config"
 	"github.com/ottogiron/ferrariworker/processor"
+	"github.com/ottogiron/ferrariworker/worker"
+
 	"github.com/streadway/amqp"
 )
 
@@ -38,7 +41,7 @@ const (
 
 type factory struct{}
 
-func (f *factory) New(config config.AdapterConfig) processor.Adapter {
+func (f *factory) New(config config.AdapterConfig) adapter.Adapter {
 	return newRabbitProcessorAdapter(config)
 }
 
@@ -52,7 +55,7 @@ type rabbitProcessorAdapter struct {
 }
 
 //NewRabbitProcessorAdapter creates a new rabbitStreamAdapter
-func newRabbitProcessorAdapter(config config.AdapterConfig) processor.Adapter {
+func newRabbitProcessorAdapter(config config.AdapterConfig) adapter.Adapter {
 	return &rabbitProcessorAdapter{
 		config: config,
 	}
@@ -72,7 +75,7 @@ func (m *rabbitProcessorAdapter) Close() error {
 	return m.connection.Close()
 }
 
-func (m *rabbitProcessorAdapter) Messages(ctx context.Context) (<-chan processor.Message, error) {
+func (m *rabbitProcessorAdapter) Messages(ctx context.Context) (<-chan worker.Message, error) {
 
 	ch, err := m.connection.Channel()
 
@@ -132,12 +135,12 @@ func (m *rabbitProcessorAdapter) Messages(ctx context.Context) (<-chan processor
 		return nil, fmt.Errorf("Could not start consuming queue %s", err)
 	}
 
-	msgChannel := make(chan processor.Message)
+	msgChannel := make(chan worker.Message)
 	go func() {
 		for {
 			select {
 			case d := <-msgs:
-				msgChannel <- processor.Message{Payload: d.Body, OriginalMessage: d}
+				msgChannel <- worker.Message{Payload: d.Body, OriginalMessage: d}
 			case <-ctx.Done():
 				close(msgChannel)
 				ch.Close()
@@ -150,6 +153,6 @@ func (m *rabbitProcessorAdapter) Messages(ctx context.Context) (<-chan processor
 }
 
 //RabbitResultHanlder post process when the job is already done
-func (m *rabbitProcessorAdapter) ResultHandler(jobResult *processor.JobResult, message processor.Message) error {
+func (m *rabbitProcessorAdapter) ResultHandler(jobResult *worker.JobResult, message worker.Message) error {
 	return nil
 }

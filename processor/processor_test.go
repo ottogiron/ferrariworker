@@ -9,16 +9,18 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ottogiron/ferrariworker/adapter"
 	"github.com/ottogiron/ferrariworker/config"
+	"github.com/ottogiron/ferrariworker/worker"
 )
 
-var successfullJobs = []Message{
-	Message{Payload: []byte("message 1")},
-	Message{Payload: []byte("message 2")},
-	Message{Payload: []byte("message 3")},
-	Message{Payload: []byte("message 4")},
-	Message{Payload: []byte("message 5")},
-	Message{Payload: []byte("message 6")},
+var successfullJobs = []worker.Message{
+	worker.Message{Payload: []byte("message 1")},
+	worker.Message{Payload: []byte("message 2")},
+	worker.Message{Payload: []byte("message 3")},
+	worker.Message{Payload: []byte("message 4")},
+	worker.Message{Payload: []byte("message 5")},
+	worker.Message{Payload: []byte("message 6")},
 }
 
 type dummyWriter struct{}
@@ -27,25 +29,25 @@ func (dw *dummyWriter) Write(p []byte) (n int, err error) {
 	return 1, nil
 }
 
-func createProcessorAdapterMock(t testing.TB, messages []Message) *processorAdapterMock {
+func createProcessorAdapterMock(t testing.TB, messages []worker.Message) *processorAdapterMock {
 	return &processorAdapterMock{tb: t, messages: messages}
 }
 
-var failingJobs = []Message{
-	Message{Payload: []byte("message for failing job 1")},
+var failingJobs = []worker.Message{
+	worker.Message{Payload: []byte("message for failing job 1")},
 }
 
 type processorAdapterFactoryMock struct {
 	t *testing.T
 }
 
-func (s *processorAdapterMock) New(config *Config) Adapter {
+func (s *processorAdapterMock) New(config *Config) adapter.Adapter {
 	return createProcessorAdapterMock(s.tb, successfullJobs)
 }
 
 type processorAdapterMock struct {
 	tb       testing.TB
-	messages []Message
+	messages []worker.Message
 }
 
 func (s *processorAdapterMock) Open() error {
@@ -56,8 +58,8 @@ func (s *processorAdapterMock) Close() error {
 	return nil
 }
 
-func (s *processorAdapterMock) Messages(context context.Context) (<-chan Message, error) {
-	msgChannel := make(chan Message)
+func (s *processorAdapterMock) Messages(context context.Context) (<-chan worker.Message, error) {
+	msgChannel := make(chan worker.Message)
 	go func() {
 		for _, message := range s.messages {
 			msgChannel <- message
@@ -66,8 +68,8 @@ func (s *processorAdapterMock) Messages(context context.Context) (<-chan Message
 	return msgChannel, nil
 }
 
-func (s *processorAdapterMock) ResultHandler(jobResult *JobResult, message Message) error {
-	if jobResult.Status != JobStatusSuccess {
+func (s *processorAdapterMock) ResultHandler(jobResult *worker.JobResult, message worker.Message) error {
+	if jobResult.Status != worker.JobStatusSuccess {
 		s.tb.Errorf("Running should be successful  status %d output %s", jobResult.Status, jobResult.Output)
 		return fmt.Errorf("Running should be successful  status %d output %s", jobResult.Status, jobResult.Output)
 	}
@@ -95,8 +97,8 @@ func (s failAdapterOpenCloseMock) Close() error {
 	return errors.New("There was an erro closing the connection")
 }
 
-func (s *failProcessorAdapterMock) ResultHandler(jobResult *JobResult, message Message) error {
-	if jobResult.Status != JobStatusFailed {
+func (s *failProcessorAdapterMock) ResultHandler(jobResult *worker.JobResult, message worker.Message) error {
+	if jobResult.Status != worker.JobStatusFailed {
 		s.tb.Errorf("Running job should be unsuccesful %s", jobResult.Output)
 	}
 	return nil
@@ -170,7 +172,10 @@ func BenchmarkProcessorFailedJobs(b *testing.B) {
 
 func TestNewMessage(t *testing.T) {
 	messageStr := "hello world"
-	m := Message{[]byte(messageStr), nil}
+	m := worker.Message{
+		Payload:         []byte(messageStr),
+		OriginalMessage: nil,
+	}
 
 	if string(m.Payload) != messageStr {
 		t.Fatalf("Message should be %s was %s", messageStr, string(m.Payload))

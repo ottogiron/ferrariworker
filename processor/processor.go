@@ -12,14 +12,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ottogiron/ferrariworker/adapter"
 	"github.com/ottogiron/ferrariworker/config"
-)
-
-type JobStatus int
-
-const (
-	JobStatusSuccess JobStatus = 0
-	JobStatusFailed  JobStatus = 1
+	"github.com/ottogiron/ferrariworker/worker"
 )
 
 var factoryRegistry = map[string]*configurationRegistry{}
@@ -30,7 +25,7 @@ type Processor interface {
 }
 
 type configurationRegistry struct {
-	factory             Factory
+	factory             adapter.Factory
 	configurationSchema *config.AdapterConfigurationSchema
 }
 
@@ -46,26 +41,12 @@ type job struct {
 	payload     []byte
 }
 
-//Message A generic message to be processed by a job
-type Message struct {
-	Payload         []byte
-	OriginalMessage interface{}
-}
-
-//JobResult Represents the result of a processed Job
-type JobResult struct {
-	Status    JobStatus
-	Output    []byte
-	StartTime time.Time
-	EndTime   time.Time
-}
-
 //JobResultHanlder Handler for the result of a processed Job
-type JobResultHanlder func(jobResult *JobResult, message *Message)
+type JobResultHanlder func(jobResult *worker.JobResult, message *worker.Message)
 
 //Config configuration for a Processor processor
 type Config struct {
-	Adapter     Adapter
+	Adapter     adapter.Adapter
 	Command     string
 	CommandPath string
 	Concurrency int
@@ -127,23 +108,23 @@ func (sp *processor) Start() error {
 	return nil
 }
 
-func (sp *processor) processJob(job job) *JobResult {
+func (sp *processor) processJob(job job) *worker.JobResult {
 	encodedPayload := base64.StdEncoding.EncodeToString(job.payload)
 	cmdStr := job.command + " " + string(encodedPayload)
 	var output bytes.Buffer
 	cmd := sp.prepareCommand(cmdStr, job.commandPath, &output)
 	err := cmd.Run()
-	status := JobStatusSuccess
+	status := worker.JobStatusSuccess
 	if err != nil {
-		status = JobStatusFailed
+		status = worker.JobStatusFailed
 		errMsg := fmt.Sprintf("-Failed to run command  %s %s", job.command, err)
 		output.WriteString(errMsg)
 	} else {
 		if success := cmd.ProcessState.Success(); !success {
-			status = JobStatusFailed
+			status = worker.JobStatusFailed
 		}
 	}
-	jobResult := &JobResult{
+	jobResult := &worker.JobResult{
 		Status: status,
 		Output: output.Bytes(),
 	}
@@ -166,7 +147,7 @@ func (sp *processor) prepareCommand(commandStr string, path string, output io.Wr
 }
 
 //RegisterAdapterFactory registers a new factory for creating adapters
-func RegisterAdapterFactory(factory Factory, adapterConfigurationSchema *config.AdapterConfigurationSchema) error {
+func RegisterAdapterFactory(factory adapter.Factory, adapterConfigurationSchema *config.AdapterConfigurationSchema) error {
 	if factoryRegistry[adapterConfigurationSchema.Name] != nil {
 		return fmt.Errorf("The factory already exists %s", adapterConfigurationSchema.Name)
 	}
@@ -175,7 +156,7 @@ func RegisterAdapterFactory(factory Factory, adapterConfigurationSchema *config.
 }
 
 //AdapterFactory returns a factory for a registered adapter
-func AdapterFactory(factoryName string) (Factory, error) {
+func AdapterFactory(factoryName string) (adapter.Factory, error) {
 	if factoryRegistry[factoryName] == nil {
 		return nil, fmt.Errorf("The adapter %s is not registered Processor cannot be created", factoryName)
 	}
