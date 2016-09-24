@@ -11,7 +11,7 @@ before_script:
   - sleep 10
 
 env: 
-  - ELASTIC_BACKEND_TEST=true
+  - TEST_ELASTIC_BACKEND=true
 
 deploy:
   provider: releases

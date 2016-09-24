@@ -8,7 +8,7 @@ import (
 )
 
 func TestBackend(t *testing.T) {
-	if os.Getenv("ELASTIC_BACKEND_TEST") != "true" {
+	if os.Getenv("TEST_ELASTIC_BACKEND") != "true" {
 		t.Skip("Skiping elastic test")
 	}
 	b := New()
