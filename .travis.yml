@@ -1,6 +1,18 @@
+sudo: required
+
 language: go
 go:
   - 1.7.1
+
+services: 
+  - elasticsearch
+
+before_script:
+  - sleep 10
+
+env: 
+  - ELASTIC_BACKEND_TEST=true
+
 deploy:
   provider: releases
   api_key:
