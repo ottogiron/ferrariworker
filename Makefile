@@ -23,10 +23,10 @@ lint:
 	@go vet $(SOURCE_DIRS)
 
 test: lint
-	 @go test -v $(SOURCE_DIRS) -cover -bench .
+	 @go test -v $(SOURCE_DIRS) -cover -bench . -race
 
 test-backend: lint 
-	@go test -v $(BACKEND_PATH) -cover -bench .
+	@go test -v $(BACKEND_PATH) -cover -bench . -race
 
 cover: 
 	gocov test $(SOURCE_DIRS) | gocov-html > coverage.html && open coverage.html
@@ -34,3 +34,26 @@ cover:
 cover-backend:
 	gocov test $(BACKEND_PATH) | gocov-html > coverage.html && open coverage.html	
 
+image: binaries
+	docker-flow build -f docker/Dockerfile
+
+
+binaries: binary-darwin binary-linux
+
+binary-darwin:
+	@-rm -rf build/dist/darwin
+	@-mkdir -p build/dist/darwin
+	GOOS=darwin $(EXTRA_BUILD_VARS) go build -ldflags "$(LD_FLAGS)" -o build/dist/darwin/$(NAME)
+
+binary-linux:
+	@-rm -rf build/dist/linux
+	@-mkdir -p build/dist/linux
+	GOOS=linux $(EXTRA_BUILD_VARS) go build -ldflags "$(LD_FLAGS)" -o build/dist/linux/$(NAME)
+
+
+package-darwin: binary-darwin
+	@tar -czf build/dist/ferrariworker.darwin-amd64.tar.gz -C build/dist/darwin ferrariworker
+
+
+package-linux: binary-linux
+	@tar -czf build/dist/ferrariworker.linux-amd64.tar.gz -C build/dist/linux ferrariworker

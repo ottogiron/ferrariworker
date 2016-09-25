@@ -1,8 +1,8 @@
 package backend
 
 import (
-	"github.com/ottogiron/ferraritrunk/config"
-	"github.com/ottogiron/ferraritrunk/worker"
+	"github.com/ottogiron/ferrariworker/config"
+	"github.com/ottogiron/ferrariworker/worker"
 )
 
 //Backend defines a data store for jobs to be persisted
@@ -13,4 +13,4 @@ type Backend interface {
 }
 
 //Factory defines a actory from message adapters
-type Factory func(config config.Config) (Backend, error)
+type Factory func(config config.AdapterConfig) (Backend, error)

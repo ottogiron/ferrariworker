@@ -4,10 +4,10 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/ottogiron/ferraritrunk/backend"
-	"github.com/ottogiron/ferraritrunk/config"
-
-	"github.com/ottogiron/ferraritrunk/worker"
+	"github.com/ottogiron/ferrariworker/backend"
+	"github.com/ottogiron/ferrariworker/config"
+	"github.com/ottogiron/ferrariworker/registry"
+	"github.com/ottogiron/ferrariworker/worker"
 	"github.com/pkg/errors"
 	"gopkg.in/olivere/elastic.v2"
 )
@@ -25,7 +25,11 @@ const (
 	jobIDField    = "job_id"
 )
 
-func factory(config config.Config) (backend.Backend, error) {
+func init() {
+	registry.RegisterBackendFactory(factory, schema)
+}
+
+func factory(config config.AdapterConfig) (backend.Backend, error) {
 	urls := strings.Split(config.GetString(urlsKey), ",")
 	client, err := elastic.NewClient(
 		elastic.SetSniff(config.GetBoolean(setSniffKey)),
@@ -43,7 +47,7 @@ type elasticBackend struct {
 	refresh bool
 }
 
-func new(client *elastic.Client, config config.Config) (backend.Backend, error) {
+func new(client *elastic.Client, config config.AdapterConfig) (backend.Backend, error) {
 
 	mapping := `{
 		"job_result":{

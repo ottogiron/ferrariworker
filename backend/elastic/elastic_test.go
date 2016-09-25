@@ -6,8 +6,8 @@ import (
 
 	"gopkg.in/olivere/elastic.v2"
 
-	"github.com/ottogiron/ferraritrunk/backend"
-	"github.com/ottogiron/ferraritrunk/config"
+	"github.com/ottogiron/ferrariworker/backend"
+	"github.com/ottogiron/ferrariworker/config"
 )
 
 var client *elastic.Client
@@ -39,7 +39,7 @@ func TestBackend(t *testing.T) {
 	if os.Getenv("TEST_ELASTIC_BACKEND") != "true" {
 		t.Skip("Skiping elastic test")
 	}
-	config := config.NewConfig()
+	config := config.NewAdapterConfig()
 	config.Set(setSniffKey, false)
 	config.Set(urlsKey, "http://127.0.0.1:9200")
 	config.Set(indexKey, "workers_test")

@@ -12,55 +12,55 @@ const (
 )
 
 //AdapterConfig defines an adapter configuration
-type Config interface {
+type AdapterConfig interface {
 	Set(string, interface{})
 	GetString(key string) string
 	GetInt(key string) int
 	GetBoolean(key string) bool
 }
 
-//AdapterConfig a map of Configurations for a processor;
-type config struct {
+//AdapterConfig a map of AdapterConfigurations for a processor;
+type adapterConfig struct {
 	adapterConfig map[string]interface{}
 }
 
-//NewAdapterConfig returns a new instance of the Configuration
-func NewConfig() Config {
-	return &config{
+//NewAdapterConfig returns a new instance of the AdapterConfiguration
+func NewAdapterConfig() AdapterConfig {
+	return &adapterConfig{
 		adapterConfig: map[string]interface{}{},
 	}
 }
 
-//Set sets a Configuration value
-func (c *config) Set(key string, value interface{}) {
+//Set sets a AdapterConfiguration value
+func (c *adapterConfig) Set(key string, value interface{}) {
 	c.adapterConfig[key] = value
 }
 
-//GetString returns a Configuration value as string
-func (c *config) GetString(key string) string {
+//GetString returns a AdapterConfiguration value as string
+func (c *adapterConfig) GetString(key string) string {
 	return cast.ToString(c.adapterConfig[key])
 }
 
-//GetInt return a Configuration value as int
-func (c *config) GetInt(key string) int {
+//GetInt return a AdapterConfiguration value as int
+func (c *adapterConfig) GetInt(key string) int {
 	return cast.ToInt(c.adapterConfig[key])
 }
 
-//GetBoolean return a Configuration value as boolean
-func (c *config) GetBoolean(key string) bool {
+//GetBoolean return a AdapterConfiguration value as boolean
+func (c *adapterConfig) GetBoolean(key string) bool {
 	return cast.ToBool(c.adapterConfig[key])
 }
 
-//ConfigurationSchema definition of Configurations for an adapter
-type ConfigurationSchema struct {
+//AdapterConfigurationSchema definition of AdapterConfigurations for an adapter
+type AdapterConfigurationSchema struct {
 	Name             string
 	ShortDescription string
 	LongDescription  string
-	Properties       []ConfigurationProperty
+	Properties       []AdapterConfigurationProperty
 }
 
-//ConfigurationProperty returns an adapter configuration property
-func (c *ConfigurationSchema) ConfigurationProperty(key string) *ConfigurationProperty {
+//AdapterConfigurationProperty returns an adapter configuration property
+func (c *AdapterConfigurationSchema) AdapterConfigurationProperty(key string) *AdapterConfigurationProperty {
 	for _, property := range c.Properties {
 		if property.Name == key {
 			return &property
@@ -69,11 +69,11 @@ func (c *ConfigurationSchema) ConfigurationProperty(key string) *ConfigurationPr
 	return nil
 }
 
-//PropertyType for a Configuration property
+//PropertyType for a AdapterConfiguration property
 type PropertyType int
 
-//ConfigurationProperty definition of an specific Configuration property
-type ConfigurationProperty struct {
+//AdapterConfigurationProperty definition of an specific AdapterConfiguration property
+type AdapterConfigurationProperty struct {
 	Name        string
 	Type        PropertyType
 	Default     interface{}

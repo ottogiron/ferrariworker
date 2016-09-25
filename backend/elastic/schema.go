@@ -1,5 +1,5 @@
 package elastic
 
-import "github.com/derekparker/delve/config"
+import "github.com/ottogiron/ferrariworker/config"
 
-var schema = &config.Config{}
+var schema = &config.AdapterConfigurationSchema{}
