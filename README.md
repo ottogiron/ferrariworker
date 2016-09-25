@@ -226,13 +226,7 @@ Please check the [RabbitMQ](processor/rabbit/rabbit.go) adapter for an example o
 
 Backends are in charge of storing and retreiving job results
 
-```go
-//Backend defines a data store for jobs to be persisted
-type Backend interface {
-  Persist(workerId string, jobID string, jobResults []processor.JobResult) error
-  JobResults(workerId string, jobID) ([]processor.JobResult, error)
-}
-```
+Available backends here []
 
 ### Prerequisites
 
