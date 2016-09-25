@@ -1,7 +1,6 @@
 package backend
 
 import (
-	"reflect"
 	"testing"
 	"time"
 
@@ -57,7 +56,7 @@ func TestBackend(t *testing.T, backend Backend, teardown func(tb testing.TB)) {
 				t.Errorf("backend.Job(%s) error %s was not expected", jobID, err)
 			}
 
-			if !reflect.DeepEqual(jobResult, singleJob) {
+			if jobResult.String() != singleJob.String() {
 				t.Errorf("backend.Job(%s) => %v expected %v", jobID, jobResult, singleJob)
 			}
 		})

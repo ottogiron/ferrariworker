@@ -1,6 +1,9 @@
 package worker
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 //Message A generic message to be processed by a job
 type Message struct {
@@ -16,6 +19,11 @@ type JobResult struct {
 	Output    []byte    `json:"output"`
 	StartTime time.Time `json:"start_time"`
 	EndTime   time.Time `json:"end_time"`
+}
+
+func (j *JobResult) String() string {
+	b, _ := json.Marshal(j)
+	return string(b)
 }
 
 type JobStatus int
