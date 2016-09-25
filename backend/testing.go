@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ottogiron/ferrariworker/worker"
+	"github.com/ottogiron/ferraritrunk/worker"
 )
 
 var persistCases = []struct {
