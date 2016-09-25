@@ -6,13 +6,13 @@ import (
 	"github.com/ottogiron/ferraritrunk/config"
 )
 
-func TestRegisterBackendFactory(t *testing.T) {
+func TestRegisterAdapterFactory(t *testing.T) {
 
 	cs := &config.ConfigurationSchema{
 		Name: "test",
 	}
 
-	err := RegisterBackendFactory(nil, cs)
+	err := RegisterAdapterFactory(nil, cs)
 
 	if err != nil {
 		t.Errorf("The first factory should be registered correctly for %s", cs.Name)
@@ -25,8 +25,8 @@ func TestRegisterBackendFactory(t *testing.T) {
 	}
 }
 
-func TestGetBackendSchemas(t *testing.T) {
-	RegisterBackendFactory(nil, &config.ConfigurationSchema{
+func TestGetConfigurationSchemas(t *testing.T) {
+	RegisterAdapterFactory(nil, &config.ConfigurationSchema{
 		Name: "test",
 	})
 
@@ -38,8 +38,8 @@ func TestGetBackendSchemas(t *testing.T) {
 	}
 }
 
-func TestGetBackendrSchema(t *testing.T) {
-	RegisterBackendFactory(nil, &config.ConfigurationSchema{Name: "test"})
+func TestGetAdapterSchema(t *testing.T) {
+	RegisterAdapterFactory(nil, &config.ConfigurationSchema{Name: "test"})
 
 	schema, _ := AdapterSchema("test")
 
