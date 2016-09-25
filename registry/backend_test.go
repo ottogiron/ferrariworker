@@ -3,12 +3,12 @@ package registry
 import (
 	"testing"
 
-	"github.com/ottogiron/ferrariworker/config"
+	"github.com/ottogiron/ferraritrunk/config"
 )
 
 func TestRegisterBackendFactory(t *testing.T) {
 
-	cs := &config.AdapterConfigurationSchema{
+	cs := &config.ConfigurationSchema{
 		Name: "test",
 	}
 
@@ -26,7 +26,7 @@ func TestRegisterBackendFactory(t *testing.T) {
 }
 
 func TestGetBackendSchemas(t *testing.T) {
-	RegisterBackendFactory(nil, &config.AdapterConfigurationSchema{
+	RegisterBackendFactory(nil, &config.ConfigurationSchema{
 		Name: "test",
 	})
 
@@ -39,7 +39,7 @@ func TestGetBackendSchemas(t *testing.T) {
 }
 
 func TestGetBackendrSchema(t *testing.T) {
-	RegisterBackendFactory(nil, &config.AdapterConfigurationSchema{Name: "test"})
+	RegisterBackendFactory(nil, &config.ConfigurationSchema{Name: "test"})
 
 	schema, _ := AdapterSchema("test")
 

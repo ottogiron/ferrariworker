@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/ottogiron/ferraritrunk/config"
+	"github.com/ottogiron/ferraritrunk/worker"
 	"github.com/ottogiron/ferrariworker/adapter"
-	"github.com/ottogiron/ferrariworker/config"
 	"github.com/ottogiron/ferrariworker/registry"
-	"github.com/ottogiron/ferrariworker/worker"
 
 	"github.com/streadway/amqp"
 )
@@ -41,7 +41,7 @@ const (
 
 type factory struct{}
 
-func (f *factory) New(config config.AdapterConfig) adapter.Adapter {
+func (f *factory) New(config config.Config) adapter.Adapter {
 	return newRabbitProcessorAdapter(config)
 }
 
@@ -50,12 +50,12 @@ func init() {
 }
 
 type rabbitProcessorAdapter struct {
-	config     config.AdapterConfig
+	config     config.Config
 	connection *amqp.Connection
 }
 
 //NewRabbitProcessorAdapter creates a new rabbitStreamAdapter
-func newRabbitProcessorAdapter(config config.AdapterConfig) adapter.Adapter {
+func newRabbitProcessorAdapter(config config.Config) adapter.Adapter {
 	return &rabbitProcessorAdapter{
 		config: config,
 	}

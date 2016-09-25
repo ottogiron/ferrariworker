@@ -3,8 +3,8 @@ package adapter
 import (
 	"context"
 
-	"github.com/ottogiron/ferrariworker/config"
-	"github.com/ottogiron/ferrariworker/worker"
+	"github.com/ottogiron/ferraritrunk/config"
+	"github.com/ottogiron/ferraritrunk/worker"
 )
 
 //Adapter defines an messages source
@@ -16,4 +16,4 @@ type Adapter interface {
 }
 
 //Factory defines a actory from message adapters
-type Factory func(config config.AdapterConfig) Adapter
+type Factory func(config config.Config) Adapter

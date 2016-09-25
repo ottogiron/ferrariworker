@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/ottogiron/ferrariworker/config"
+	"github.com/ottogiron/ferraritrunk/config"
 	"github.com/ottogiron/ferrariworker/processor"
 	"github.com/ottogiron/ferrariworker/registry"
 	"github.com/spf13/cast"
@@ -120,12 +120,12 @@ func adapterCommandAction(cmd *cobra.Command, args []string) {
 	}
 }
 
-func parseAdapterConfiguration(name string) (config.AdapterConfig, error) {
+func parseAdapterConfiguration(name string) (config.Config, error) {
 	schema, err := registry.AdapterSchema(name)
 	if err != nil {
 		return nil, fmt.Errorf("Couldn't load schema for adapter %s", name)
 	}
-	config := config.NewAdapterConfig()
+	config := config.NewConfig()
 	for _, propertyDefinition := range schema.Properties {
 		viperPropertyName := viperConfigKey(name, propertyDefinition.Name)
 		config.Set(propertyDefinition.Name, viper.Get(viperPropertyName))

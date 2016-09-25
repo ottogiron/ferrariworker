@@ -12,8 +12,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/ottogiron/ferraritrunk/worker"
 	"github.com/ottogiron/ferrariworker/adapter"
-	"github.com/ottogiron/ferrariworker/worker"
 )
 
 //Processor defines a queue generic processor

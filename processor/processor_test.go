@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ottogiron/ferraritrunk/worker"
 	"github.com/ottogiron/ferrariworker/adapter"
-	"github.com/ottogiron/ferrariworker/worker"
 )
 
 var successfullJobs = []worker.Message{

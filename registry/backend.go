@@ -3,19 +3,19 @@ package registry
 import (
 	"fmt"
 
-	"github.com/ottogiron/ferrariworker/backend"
-	"github.com/ottogiron/ferrariworker/config"
+	"github.com/ottogiron/ferraritrunk/backend"
+	"github.com/ottogiron/ferraritrunk/config"
 )
 
 type backendConfigurationRegistry struct {
 	factory             backend.Factory
-	configurationSchema *config.AdapterConfigurationSchema
+	configurationSchema *config.ConfigurationSchema
 }
 
 var backendRegistry = map[string]*backendConfigurationRegistry{}
 
 //RegisterBackendFactory registers a new factory for creating adapters
-func RegisterBackendFactory(factory backend.Factory, adapterConfigurationSchema *config.AdapterConfigurationSchema) error {
+func RegisterBackendFactory(factory backend.Factory, adapterConfigurationSchema *config.ConfigurationSchema) error {
 	if backendRegistry[adapterConfigurationSchema.Name] != nil {
 		return fmt.Errorf("The factory already exists %s", adapterConfigurationSchema.Name)
 	}
@@ -32,7 +32,7 @@ func BackendFactory(factoryName string) (backend.Factory, error) {
 }
 
 //BackendSchema returns the configuration schema for the adapter factory
-func BackendSchema(factoryName string) (*config.AdapterConfigurationSchema, error) {
+func BackendSchema(factoryName string) (*config.ConfigurationSchema, error) {
 	if backendRegistry[factoryName] == nil {
 		return nil, fmt.Errorf("The adapter %s is not registered Processor cannot be created", factoryName)
 	}
@@ -40,8 +40,8 @@ func BackendSchema(factoryName string) (*config.AdapterConfigurationSchema, erro
 }
 
 //BackendSchemas returns the schemas for all the available adapters
-func BackendSchemas() []*config.AdapterConfigurationSchema {
-	configurationSchemas := []*config.AdapterConfigurationSchema{}
+func BackendSchemas() []*config.ConfigurationSchema {
+	configurationSchemas := []*config.ConfigurationSchema{}
 	for _, registry := range backendRegistry {
 		configurationSchemas = append(configurationSchemas, registry.configurationSchema)
 	}
