@@ -16,7 +16,7 @@ var persistCases = []struct {
 			ID:        "job_test",
 			WorkerID:  "test_worker_1",
 			Status:    worker.JobStatusSuccess,
-			Output:    []byte{},
+			Output:    []byte("A test output"),
 			StartTime: time.Now(),
 			EndTime:   time.Now()},
 	}},
