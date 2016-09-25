@@ -1,6 +1,7 @@
 package elastic
 
 import (
+	"reflect"
 	"strings"
 
 	"github.com/ottogiron/ferrariworker/backend"
@@ -15,7 +16,11 @@ const (
 	setSniffKey = "set-sniff"
 	indexKey    = "index"
 	urlsKey     = "urls"
-	docType     = "job_result"
+)
+
+const (
+	docType        = "job_result"
+	workerDocField = "worker_id"
 )
 
 func init() {
@@ -89,7 +94,28 @@ func (e *elasticBackend) Persist(jobResults []*worker.JobResult) error {
 }
 
 func (e *elasticBackend) JobResults(workerID string) ([]*worker.JobResult, error) {
-	return nil, nil
+	query := elastic.NewTermQuery(workerDocField, workerID)
+	results, err := e.client.
+		Search(e.index).
+		Type(docType).
+		Query(query).
+		Do()
+
+	if err != nil {
+		return nil, errors.Wrapf(err, "Failed to retreive jobs for workerID %s", workerID)
+	}
+
+	jobResults := []*worker.JobResult{}
+
+	var ttyp *worker.JobResult
+
+	for _, item := range results.Each(reflect.TypeOf(ttyp)) {
+		if t, ok := item.(*worker.JobResult); ok {
+			jobResults = append(jobResults, t)
+		}
+	}
+
+	return jobResults, nil
 }
 
 func (e *elasticBackend) Job(jobID string) (*worker.JobResult, error) {

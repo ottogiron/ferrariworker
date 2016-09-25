@@ -8,6 +8,14 @@ import (
 	"github.com/ottogiron/ferrariworker/config"
 )
 
+func setUp(tb testing.TB) {
+
+}
+
+func tearDown(tb testing.TB) {
+
+}
+
 func TestBackend(t *testing.T) {
 	if os.Getenv("TEST_ELASTIC_BACKEND") != "true" {
 		t.Skip("Skiping elastic test")
