@@ -10,6 +10,8 @@ type Message struct {
 
 //JobResult Represents the result of a processed Job
 type JobResult struct {
+	ID        string
+	WorkerID  string
 	Status    JobStatus
 	Output    []byte
 	StartTime time.Time

@@ -16,6 +16,4 @@ type Adapter interface {
 }
 
 //Factory defines a actory from message adapters
-type Factory interface {
-	New(config config.AdapterConfig) Adapter
-}
+type Factory func(config config.AdapterConfig) Adapter

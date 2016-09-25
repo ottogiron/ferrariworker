@@ -104,7 +104,7 @@ func adapterCommandAction(cmd *cobra.Command, args []string) {
 	if err != nil {
 		log.Fatalf("Couldn't parse configuration for %s %s", cmd.Name(), err)
 	}
-	adapter := factory.New(config)
+	adapter := factory(config)
 	processorConfig := &processor.Config{
 		Adapter:     adapter,
 		Command:     command,

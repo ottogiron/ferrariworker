@@ -46,7 +46,7 @@ func (f *factory) New(config config.AdapterConfig) adapter.Adapter {
 }
 
 func init() {
-	registry.RegisterAdapterFactory(&factory{}, schema)
+	registry.RegisterAdapterFactory(newRabbitProcessorAdapter, schema)
 }
 
 type rabbitProcessorAdapter struct {

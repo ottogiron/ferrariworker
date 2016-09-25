@@ -8,10 +8,12 @@ import (
 )
 
 var persistCases = []struct {
-	jobResult []worker.JobResult
+	jobResult []*worker.JobResult
 }{
-	{[]worker.JobResult{
-		worker.JobResult{
+	{[]*worker.JobResult{
+		&worker.JobResult{
+			ID:        "job_test",
+			WorkerID:  "worker_test",
 			Status:    worker.JobStatusSuccess,
 			Output:    []byte{},
 			StartTime: time.Now(),
@@ -21,7 +23,7 @@ var persistCases = []struct {
 
 func TestBackend(t *testing.T, backend Backend) {
 	for _, tc := range persistCases {
-		err := backend.Persist("worker_test", "job_test", tc.jobResult)
+		err := backend.Persist(tc.jobResult)
 		if err != nil {
 			t.Errorf("backend.Persist() => err:%s is not expected", err)
 		}

@@ -7,11 +7,10 @@ import (
 
 //Backend defines a data store for jobs to be persisted
 type Backend interface {
-	Persist(workerId string, jobID string, jobResults []worker.JobResult) error
-	JobResults(workerId string, jobID string) ([]worker.JobResult, error)
+	Persist(jobResults []*worker.JobResult) error
+	JobResults(workerId string) ([]*worker.JobResult, error)
+	Job(jobID string) (*worker.JobResult, error)
 }
 
 //Factory defines a actory from message adapters
-type Factory interface {
-	New(config config.AdapterConfig) Backend
-}
+type Factory func(config config.AdapterConfig) (Backend, error)

@@ -3,7 +3,6 @@ package registry
 import (
 	"fmt"
 
-	"github.com/ottogiron/ferrariworker/adapter"
 	"github.com/ottogiron/ferrariworker/backend"
 	"github.com/ottogiron/ferrariworker/config"
 )
@@ -16,11 +15,11 @@ type backendConfigurationRegistry struct {
 var backendRegistry = map[string]*backendConfigurationRegistry{}
 
 //RegisterBackendFactory registers a new factory for creating adapters
-func RegisterBackendFactory(factory adapter.Factory, adapterConfigurationSchema *config.AdapterConfigurationSchema) error {
+func RegisterBackendFactory(factory backend.Factory, adapterConfigurationSchema *config.AdapterConfigurationSchema) error {
 	if backendRegistry[adapterConfigurationSchema.Name] != nil {
 		return fmt.Errorf("The factory already exists %s", adapterConfigurationSchema.Name)
 	}
-	factoryRegistry[adapterConfigurationSchema.Name] = &configurationRegistry{factory, adapterConfigurationSchema}
+	backendRegistry[adapterConfigurationSchema.Name] = &backendConfigurationRegistry{factory, adapterConfigurationSchema}
 	return nil
 }
 
