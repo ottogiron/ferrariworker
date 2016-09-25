@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -30,12 +31,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fsnotify/fsnotify"
+	"github.com/kr/pretty"
 	"github.com/mitchellh/mapstructure"
-	"github.com/spf13/afero"
 	"github.com/spf13/cast"
 	jww "github.com/spf13/jwalterweatherman"
 	"github.com/spf13/pflag"
+	"gopkg.in/fsnotify.v1"
 )
 
 var v *Viper
@@ -132,9 +133,6 @@ type Viper struct {
 	// A set of paths to look for the config file in
 	configPaths []string
 
-	// The filesystem to read config from.
-	fs afero.Fs
-
 	// A set of remote providers to search for the configuration
 	remoteProviders []*defaultRemoteProvider
 
@@ -164,7 +162,6 @@ func New() *Viper {
 	v := new(Viper)
 	v.keyDelim = "."
 	v.configName = "config"
-	v.fs = afero.NewOsFs()
 	v.config = make(map[string]interface{})
 	v.override = make(map[string]interface{})
 	v.defaults = make(map[string]interface{})
@@ -450,11 +447,6 @@ func (v *Viper) SetTypeByDefaultValue(enable bool) {
 	v.typeByDefValue = enable
 }
 
-// GetViper gets the global Viper instance.
-func GetViper() *Viper {
-	return v
-}
-
 // Viper is essentially repository for configurations
 // Get can retrieve any value given the key to use
 // Get has the behavior of returning the value associated with the first
@@ -548,7 +540,7 @@ func (v *Viper) GetString(key string) string {
 	return cast.ToString(v.Get(key))
 }
 
-// Returns the value associated with the key as a boolean
+// Returns the value associated with the key asa boolean
 func GetBool(key string) bool { return v.GetBool(key) }
 func (v *Viper) GetBool(key string) bool {
 	return cast.ToBool(v.Get(key))
@@ -558,12 +550,6 @@ func (v *Viper) GetBool(key string) bool {
 func GetInt(key string) int { return v.GetInt(key) }
 func (v *Viper) GetInt(key string) int {
 	return cast.ToInt(v.Get(key))
-}
-
-// Returns the value associated with the key as an integer
-func GetInt64(key string) int64 { return v.GetInt64(key) }
-func (v *Viper) GetInt64(key string) int64 {
-	return cast.ToInt64(v.Get(key))
 }
 
 // Returns the value associated with the key as a float64
@@ -675,8 +661,8 @@ func (v *Viper) BindPFlags(flags *pflag.FlagSet) (err error) {
 	return v.BindFlagValues(pflagValueSet{flags})
 }
 
-// Bind a specific key to a pflag (as used by cobra).
-// Example (where serverCmd is a Cobra instance):
+// Bind a specific key to a pflag (as used by cobra)
+// Example(where serverCmd is a Cobra instance):
 //
 //	 serverCmd.Flags().Int("port", 1138, "Port to run Application server on")
 //	 Viper.BindPFlag("port", serverCmd.Flags().Lookup("port"))
@@ -945,7 +931,7 @@ func (v *Viper) ReadInConfig() error {
 		return UnsupportedConfigError(v.getConfigType())
 	}
 
-	file, err := afero.ReadFile(v.fs, v.getConfigFile())
+	file, err := ioutil.ReadFile(v.getConfigFile())
 	if err != nil {
 		return err
 	}
@@ -963,7 +949,7 @@ func (v *Viper) MergeInConfig() error {
 		return UnsupportedConfigError(v.getConfigType())
 	}
 
-	file, err := afero.ReadFile(v.fs, v.getConfigFile())
+	file, err := ioutil.ReadFile(v.getConfigFile())
 	if err != nil {
 		return err
 	}
@@ -1217,19 +1203,12 @@ func (v *Viper) AllSettings() map[string]interface{} {
 	return m
 }
 
-// Se the filesystem to use to read configuration.
-func SetFs(fs afero.Fs) { v.SetFs(fs) }
-func (v *Viper) SetFs(fs afero.Fs) {
-	v.fs = fs
-}
-
 // Name for the config file.
 // Does not include extension.
 func SetConfigName(in string) { v.SetConfigName(in) }
 func (v *Viper) SetConfigName(in string) {
 	if in != "" {
 		v.configName = in
-		v.configFile = ""
 	}
 }
 
@@ -1305,11 +1284,17 @@ func (v *Viper) findConfigFile() (string, error) {
 func Debug() { v.Debug() }
 func (v *Viper) Debug() {
 	fmt.Println("Aliases:")
-	fmt.Printf("Aliases:\n%#v\n", v.aliases)
-	fmt.Printf("Override:\n%#v\n", v.override)
-	fmt.Printf("PFlags:\n%#v\n", v.pflags)
-	fmt.Printf("Env:\n%#v\n", v.env)
-	fmt.Printf("Key/Value Store:\n%#v\n", v.kvstore)
-	fmt.Printf("Config:\n%#v\n", v.config)
-	fmt.Printf("Defaults:\n%#v\n", v.defaults)
+	pretty.Println(v.aliases)
+	fmt.Println("Override:")
+	pretty.Println(v.override)
+	fmt.Println("PFlags")
+	pretty.Println(v.pflags)
+	fmt.Println("Env:")
+	pretty.Println(v.env)
+	fmt.Println("Key/Value Store:")
+	pretty.Println(v.kvstore)
+	fmt.Println("Config:")
+	pretty.Println(v.config)
+	fmt.Println("Defaults:")
+	pretty.Println(v.defaults)
 }
