@@ -124,22 +124,22 @@
 			"checksumSHA1": "S6mBawpMecQK0zvrb989Dp6rJPw=",
 			"origin": "github.com/ottogiron/ferrariworker/vendor/github.com/ottogiron/ferraritrunk/backend",
 			"path": "github.com/ottogiron/ferraritrunk/backend",
-			"revision": "a26dc681979dff5c81759da757926f3e51275633",
-			"revisionTime": "2016-09-25T04:44:40Z"
+			"revision": "41e1ced60e2add5c1aa6c81b548605f4f778ef19",
+			"revisionTime": "2016-09-25T05:05:10Z"
 		},
 		{
 			"checksumSHA1": "gvyIp9YOfvIhrVLq5NkSo/UpXqs=",
 			"origin": "github.com/ottogiron/ferrariworker/vendor/github.com/ottogiron/ferraritrunk/config",
 			"path": "github.com/ottogiron/ferraritrunk/config",
-			"revision": "a26dc681979dff5c81759da757926f3e51275633",
-			"revisionTime": "2016-09-25T04:44:40Z"
+			"revision": "41e1ced60e2add5c1aa6c81b548605f4f778ef19",
+			"revisionTime": "2016-09-25T05:05:10Z"
 		},
 		{
 			"checksumSHA1": "PGBcjDi6WZtZOmXnE8QC8QvgP+4=",
 			"origin": "github.com/ottogiron/ferrariworker/vendor/github.com/ottogiron/ferraritrunk/worker",
 			"path": "github.com/ottogiron/ferraritrunk/worker",
-			"revision": "a26dc681979dff5c81759da757926f3e51275633",
-			"revisionTime": "2016-09-25T04:44:40Z"
+			"revision": "41e1ced60e2add5c1aa6c81b548605f4f778ef19",
+			"revisionTime": "2016-09-25T05:05:10Z"
 		},
 		{
 			"checksumSHA1": "8Y05Pz7onrQPcVWW6JStSsYRh6E=",
