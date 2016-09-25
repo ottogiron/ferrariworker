@@ -226,7 +226,7 @@ Please check the [RabbitMQ](processor/rabbit/rabbit.go) adapter for an example o
 
 Backends are in charge of storing and retreiving job results
 
-Available backends here []
+Available backends here [ferraritrunk](https://github.com/ottogiron/ferraritrunk)
 
 ### Prerequisites
 
