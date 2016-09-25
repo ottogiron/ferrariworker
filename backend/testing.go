@@ -1,6 +1,7 @@
 package backend
 
 import (
+	"reflect"
 	"testing"
 	"time"
 
@@ -21,23 +22,23 @@ var persistCases = []struct {
 	}},
 }
 
-func TestBackend(t *testing.T, backend Backend) {
+func TestBackend(t *testing.T, backend Backend, teardown func(tb testing.TB)) {
 
 	for _, tc := range persistCases {
 
-		t.Run("Persist", func(t *testing.T) {
+		t.Run("Persist Jobs", func(t *testing.T) {
 			err := backend.Persist(tc.jobResult)
 			if err != nil {
 				t.Errorf("backend.Persist() => err:%s is not expected", err)
 			}
 		})
 
-		t.Run("JobResults", func(t *testing.T) {
+		t.Run("Get JobResults", func(t *testing.T) {
 			workerID := tc.jobResult[0].WorkerID
 			persistedJobs, err := backend.JobResults(workerID)
 
 			if err != nil {
-				t.Fatalf("backend.JobResults(%s) err: %s was not expected", workerID, err)
+				t.Fatalf("backend.JobResults(%s) error %s was not expected", workerID, err)
 			}
 
 			plen := len(persistedJobs)
@@ -47,6 +48,20 @@ func TestBackend(t *testing.T, backend Backend) {
 			}
 		})
 
+		t.Run("Get Job", func(t *testing.T) {
+			singleJob := tc.jobResult[0]
+			jobID := singleJob.ID
+			jobResult, err := backend.Job(jobID)
+
+			if err != nil {
+				t.Errorf("backend.Job(%s) error %s was not expected", jobID, err)
+			}
+
+			if !reflect.DeepEqual(jobResult, singleJob) {
+				t.Errorf("backend.Job(%s) => %v expected %v", jobID, jobResult, singleJob)
+			}
+		})
+		teardown(t)
 	}
 
 }

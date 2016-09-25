@@ -13,14 +13,16 @@ import (
 )
 
 const (
-	setSniffKey = "set-sniff"
-	indexKey    = "index"
-	urlsKey     = "urls"
+	setSniffKey     = "set-sniff"
+	indexKey        = "index"
+	urlsKey         = "urls"
+	refreshIndexKey = "refresh-index"
 )
 
 const (
-	docType        = "job_result"
-	workerDocField = "worker_id"
+	docType       = "job_result"
+	workerIDField = "worker_id"
+	jobIDField    = "job_id"
 )
 
 func init() {
@@ -40,12 +42,13 @@ func factory(config config.AdapterConfig) (backend.Backend, error) {
 }
 
 type elasticBackend struct {
-	client *elastic.Client
-	index  string
+	client  *elastic.Client
+	index   string
+	refresh bool
 }
 
 func new(client *elastic.Client, config config.AdapterConfig) (backend.Backend, error) {
-	index := config.GetString(indexKey)
+
 	mapping := `{
 		"job_result":{
 			"properties":{
@@ -65,7 +68,9 @@ func new(client *elastic.Client, config config.AdapterConfig) (backend.Backend, 
 	if err != nil {
 		return nil, errors.Wrapf(err, "Failed to define default mappings for worker_id and job_id %s", mapping)
 	}
-	return &elasticBackend{client, index}, nil
+	index := config.GetString(indexKey)
+	refresh := config.GetBoolean(refreshIndexKey)
+	return &elasticBackend{client, index, refresh}, nil
 }
 
 func (e *elasticBackend) Persist(jobResults []*worker.JobResult) error {
@@ -79,7 +84,8 @@ func (e *elasticBackend) Persist(jobResults []*worker.JobResult) error {
 	bulkReq := e.client.
 		Bulk().
 		Index(e.index).
-		Type(docType)
+		Type(docType).
+		Refresh(e.refresh)
 
 	for _, jr := range jobResults {
 		doc := elastic.NewBulkIndexRequest().Index(e.index).Type(docType).Doc(jr)
@@ -94,7 +100,7 @@ func (e *elasticBackend) Persist(jobResults []*worker.JobResult) error {
 }
 
 func (e *elasticBackend) JobResults(workerID string) ([]*worker.JobResult, error) {
-	query := elastic.NewTermQuery(workerDocField, workerID)
+	query := elastic.NewTermQuery(workerIDField, workerID)
 	results, err := e.client.
 		Search(e.index).
 		Type(docType).
@@ -112,6 +118,8 @@ func (e *elasticBackend) JobResults(workerID string) ([]*worker.JobResult, error
 	for _, item := range results.Each(reflect.TypeOf(ttyp)) {
 		if t, ok := item.(*worker.JobResult); ok {
 			jobResults = append(jobResults, t)
+		} else {
+			return nil, errors.Errorf("Failed to deserialize job result %s", item)
 		}
 	}
 
@@ -119,5 +127,28 @@ func (e *elasticBackend) JobResults(workerID string) ([]*worker.JobResult, error
 }
 
 func (e *elasticBackend) Job(jobID string) (*worker.JobResult, error) {
+	query := elastic.NewTermQuery(jobIDField, jobID)
+	results, err := e.client.
+		Search(e.index).
+		Type(docType).
+		Query(query).
+		Do()
+
+	if err != nil {
+		return nil, errors.Wrapf(err, "Failed to retreive job for jobID %s", jobID)
+	}
+
+	if results.TotalHits() != 1 {
+		return nil, errors.Wrapf(err, "No hits for jobID %s", err)
+	}
+	var ttyp *worker.JobResult
+
+	for _, item := range results.Each(reflect.TypeOf(ttyp)) {
+		if t, ok := item.(*worker.JobResult); ok {
+			return t, nil
+		} else {
+			return nil, errors.Errorf("Failed to deserialize job result %s", item)
+		}
+	}
 	return nil, nil
 }
