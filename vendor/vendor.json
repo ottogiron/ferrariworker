@@ -105,6 +105,24 @@
 			"revisionTime": "2016-08-08T18:12:53Z"
 		},
 		{
+			"checksumSHA1": "S6mBawpMecQK0zvrb989Dp6rJPw=",
+			"path": "github.com/ottogiron/ferraritrunk/backend",
+			"revision": "478cefc8f9659b23bc3ef4e311423b709dc5eff4",
+			"revisionTime": "2016-09-25T04:11:18Z"
+		},
+		{
+			"checksumSHA1": "gvyIp9YOfvIhrVLq5NkSo/UpXqs=",
+			"path": "github.com/ottogiron/ferraritrunk/config",
+			"revision": "478cefc8f9659b23bc3ef4e311423b709dc5eff4",
+			"revisionTime": "2016-09-25T04:11:18Z"
+		},
+		{
+			"checksumSHA1": "PGBcjDi6WZtZOmXnE8QC8QvgP+4=",
+			"path": "github.com/ottogiron/ferraritrunk/worker",
+			"revision": "478cefc8f9659b23bc3ef4e311423b709dc5eff4",
+			"revisionTime": "2016-09-25T04:11:18Z"
+		},
+		{
 			"checksumSHA1": "8Y05Pz7onrQPcVWW6JStSsYRh6E=",
 			"path": "github.com/pelletier/go-buffruneio",
 			"revision": "df1e16fde7fc330a0ca68167c23bf7ed6ac31d6d",
