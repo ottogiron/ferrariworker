@@ -22,8 +22,11 @@ lint:
 	@go fmt $(SOURCE_DIRS)
 	@go vet $(SOURCE_DIRS)
 
-test: lint
+test: install_dependencies lint
 	 @go test -v $(SOURCE_DIRS) -cover -bench . -race 
+
+install_dependencies: 
+	glide install
 
 cover: 
 	gocov test $(SOURCE_DIRS) | gocov-html > coverage.html && open coverage.html
