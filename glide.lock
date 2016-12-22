@@ -1,5 +1,5 @@
 hash: 3cd041e3d2f382e11fb099ff47b2cbed3289c2a57e70579c9181a6cd48195279
-updated: 2016-12-21T22:10:10.776478249-06:00
+updated: 2016-12-22T00:17:07.360062986-06:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: fd9ec7deca8bf46ecd2a795baaacf2b3a9be1197
@@ -21,7 +21,7 @@ imports:
 - name: github.com/mitchellh/mapstructure
   version: f3009df150dadf309fdee4a54ed65c124afad715
 - name: github.com/ottogiron/ferraritrunk
-  version: 41e1ced60e2add5c1aa6c81b548605f4f778ef19
+  version: 9ae59969d76f811484ebc4db09fa022839af3777
   subpackages:
   - config
   - worker
