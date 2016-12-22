@@ -1,9 +1,9 @@
-sudo: required
-
 language: go
 go:
-  - 1.7.1
-
+  - 1.7
+install:
+  - mkdir -p $GOPATH/bin
+  - curl https://glide.sh/get | sh
 deploy:
   provider: releases
   api_key:
@@ -15,4 +15,4 @@ deploy:
 
   on:
     tags: true
-    go: '1.7.1'
+    go: '1.7'

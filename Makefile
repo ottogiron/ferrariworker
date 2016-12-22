@@ -11,8 +11,8 @@ LD_FLAGS := -X 	github.com/ottogiron/ferrariworker/cmd.buildVersion=$(VERSION)
 LD_FLAGS += -X github.com/ottogiron/ferrariworker/cmd.buildCommit=$(COMMIT_ID)
 LD_FLAGS += -X github.com/ottogiron/ferrariworker/cmd.buildDate=$(DATE)
 EXTRA_BUILD_VARS := CGO_ENABLED=0 GOARCH=amd64
-SOURCE_DIRS ?= $(shell go list ./... | grep -v /vendor/)
-ADAPTER_PATH := $(shell go list)/adapter/$(ADAPTER_NAME)
+SOURCE_DIRS := $(shell go list ./... | grep -v /vendor/)
+
 
 all: test package-linux package-darwin
 
@@ -22,17 +22,15 @@ lint:
 	@go fmt $(SOURCE_DIRS)
 	@go vet $(SOURCE_DIRS)
 
-test: lint
-	 @go test -v $(SOURCE_DIRS) -cover -bench . -race
+test: install_dependencies lint
+	 @go test -v $(SOURCE_DIRS) -cover -bench . -race 
 
-test-adapter: lint 
-	@go test -v $(ADAPTER_PATH) -cover -bench . -race
+install_dependencies: 
+	glide install
 
 cover: 
 	gocov test $(SOURCE_DIRS) | gocov-html > coverage.html && open coverage.html
-
-cover-adapter:
-	gocov test $(ADAPTER_PATH) | gocov-html > coverage.html && open coverage.html	
+	
 
 image: binaries
 	docker-flow build -f docker/Dockerfile

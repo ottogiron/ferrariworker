@@ -8,3 +8,4 @@ build/dist
 .vscode
 debug
 coverage.html
+vendor
