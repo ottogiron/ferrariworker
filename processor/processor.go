@@ -11,13 +11,9 @@ import (
 	"strings"
 	"sync"
 	"time"
-)
 
-type JobStatus int
-
-const (
-	JobStatusSuccess JobStatus = 0
-	JobStatusFailed  JobStatus = 1
+	"github.com/inconshreveable/log15"
+	"github.com/ottogiron/ferraritrunk/worker"
 )
 
 var factoryRegistry = map[string]*configurationRegistry{}
@@ -33,9 +29,11 @@ type configurationRegistry struct {
 }
 
 type processor struct {
-	config *Config
-	stdout io.Writer
-	stderr io.Writer
+	config  *Config
+	stdout  io.Writer
+	stderr  io.Writer
+	adapter Adapter
+	logger  log15.Logger
 }
 
 type job struct {
@@ -50,18 +48,11 @@ type Message struct {
 	OriginalMessage interface{}
 }
 
-//JobResult Represents the result of a processed Job
-type JobResult struct {
-	Status JobStatus
-	Output []byte
-}
-
 //JobResultHanlder Handler for the result of a processed Job
-type JobResultHanlder func(jobResult *JobResult, message *Message)
+type JobResultHanlder func(jobResult *worker.JobResult, message *Message)
 
 //Config configuration for a Processor processor
 type Config struct {
-	Adapter     Adapter
 	Command     string
 	CommandPath string
 	Concurrency int
@@ -69,7 +60,7 @@ type Config struct {
 }
 
 //New creates a new instance of Processor processor
-func New(config *Config, stdout io.Writer, stderr io.Writer) Processor {
+func New(config *Config, adapter Adapter, logger log15.Logger, stdout io.Writer, stderr io.Writer) Processor {
 	if stdout == nil {
 		stdout = os.Stdout
 	}
@@ -77,23 +68,23 @@ func New(config *Config, stdout io.Writer, stderr io.Writer) Processor {
 	if stderr == nil {
 		stdout = os.Stderr
 	}
-	return &processor{config, stdout, stderr}
+	return &processor{config, stdout, stderr, adapter, logger}
 }
 
 //Start starts processing
 func (sp *processor) Start() error {
 	//open the connection
-	err := sp.config.Adapter.Open()
+	err := sp.adapter.Open()
 	if err != nil {
 		return fmt.Errorf("Failed to open the processor Adapter connection %s", err)
 	}
-	defer sp.config.Adapter.Close()
+	defer sp.adapter.Close()
 	wg := sync.WaitGroup{}
 	//Wait for the timeout once then call done to exit the processing
 	wg.Add(sp.config.Concurrency)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	msgs, err := sp.config.Adapter.Messages(ctx)
+	msgs, err := sp.adapter.Messages(ctx)
 	if err != nil {
 		return fmt.Errorf("Failed to get messages from adapter %s", err)
 
@@ -105,8 +96,12 @@ func (sp *processor) Start() error {
 				case m, ok := <-msgs:
 					if ok {
 						j := job{sp.config.Command, sp.config.CommandPath, m.Payload}
-						jobResult := sp.processJob(j)
-						sp.config.Adapter.ResultHandler(jobResult, m)
+						jobResult, err := sp.processJob(j)
+						if err != nil {
+							//just return for now, job output should be already in stdout
+							return
+						}
+						sp.adapter.ResultHandler(jobResult, m)
 					} else {
 						wg.Done()
 						return
@@ -123,28 +118,28 @@ func (sp *processor) Start() error {
 	return nil
 }
 
-func (sp *processor) processJob(job job) *JobResult {
+func (sp *processor) processJob(job job) (*worker.JobResult, error) {
 	encodedPayload := base64.StdEncoding.EncodeToString(job.payload)
 	cmdStr := job.command + " " + string(encodedPayload)
 	var output bytes.Buffer
 	cmd := sp.prepareCommand(cmdStr, job.commandPath, &output)
 	err := cmd.Run()
-	status := JobStatusSuccess
+	status := worker.JobStatusSuccess
 	if err != nil {
-		status = JobStatusFailed
+		status = worker.JobStatusFailed
 		errMsg := fmt.Sprintf("-Failed to run command  %s %s", job.command, err)
 		output.WriteString(errMsg)
 	} else {
 		if success := cmd.ProcessState.Success(); !success {
-			status = JobStatusFailed
+			status = worker.JobStatusFailed
 		}
 	}
-	jobResult := &JobResult{
+	jobResult := &worker.JobResult{
 		Status: status,
 		Output: output.Bytes(),
 	}
 
-	return jobResult
+	return jobResult, nil
 }
 
 //prepareCommand executes a command outputs to stdout

@@ -1,5 +1,14 @@
 package: github.com/ottogiron/ferrariworker
 import:
+- package: github.com/inconshreveable/log15
+  version: ^2.11.0
+- package: github.com/ottogiron/ferraritrunk
+  version: ^0.7.0
+  subpackages:
+  - backend
+  - worker
+- package: github.com/pkg/errors
+  version: ^0.8.0
 - package: github.com/spf13/cast
 - package: github.com/spf13/cobra
 - package: github.com/spf13/viper

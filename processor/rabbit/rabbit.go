@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/ottogiron/ferraritrunk/worker"
 	"github.com/ottogiron/ferrariworker/processor"
 	"github.com/streadway/amqp"
 )
@@ -149,6 +150,6 @@ func (m *rabbitProcessorAdapter) Messages(ctx context.Context) (<-chan processor
 }
 
 //RabbitResultHanlder post process when the job is already done
-func (m *rabbitProcessorAdapter) ResultHandler(jobResult *processor.JobResult, message processor.Message) error {
+func (m *rabbitProcessorAdapter) ResultHandler(jobResult *worker.JobResult, message processor.Message) error {
 	return nil
 }

@@ -8,6 +8,9 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+
+	"github.com/inconshreveable/log15"
+	"github.com/ottogiron/ferraritrunk/worker"
 )
 
 var successfullJobs = []Message{
@@ -20,6 +23,10 @@ var successfullJobs = []Message{
 }
 
 type dummyWriter struct{}
+
+func newLogger() log15.Logger {
+	return log15.New()
+}
 
 func (dw *dummyWriter) Write(p []byte) (n int, err error) {
 	return 1, nil
@@ -64,8 +71,8 @@ func (s *processorAdapterMock) Messages(context context.Context) (<-chan Message
 	return msgChannel, nil
 }
 
-func (s *processorAdapterMock) ResultHandler(jobResult *JobResult, message Message) error {
-	if jobResult.Status != JobStatusSuccess {
+func (s *processorAdapterMock) ResultHandler(jobResult *worker.JobResult, message Message) error {
+	if jobResult.Status != worker.JobStatusSuccess {
 		s.tb.Errorf("Running should be successful  status %d output %s", jobResult.Status, jobResult.Output)
 		return fmt.Errorf("Running should be successful  status %d output %s", jobResult.Status, jobResult.Output)
 	}
@@ -93,8 +100,8 @@ func (s failAdapterOpenCloseMock) Close() error {
 	return errors.New("There was an erro closing the connection")
 }
 
-func (s *failProcessorAdapterMock) ResultHandler(jobResult *JobResult, message Message) error {
-	if jobResult.Status != JobStatusFailed {
+func (s *failProcessorAdapterMock) ResultHandler(jobResult *worker.JobResult, message Message) error {
+	if jobResult.Status != worker.JobStatusFailed {
 		s.tb.Errorf("Running job should be unsuccesful %s", jobResult.Output)
 	}
 	return nil
@@ -104,21 +111,21 @@ func TestProcessorSuccessfulJobs(t *testing.T) {
 
 	processorAdapterMock := &processorAdapterMock{tb: t, messages: successfullJobs}
 	processorConfig := &Config{
-		Adapter:     processorAdapterMock,
+
 		Command:     `echo "Hello successful test"`,
 		CommandPath: ".",
 		Concurrency: 1,
 		WaitTimeout: 200,
 	}
 	var w bytes.Buffer
-	processor := New(processorConfig, &w, &w)
+	processor := New(processorConfig, processorAdapterMock, nil, &w, &w)
 	processor.Start()
 }
 
 func BenchmarkProcessorSuccessfulJobs(b *testing.B) {
 	processorAdapterMock := &processorAdapterMock{tb: b, messages: successfullJobs}
 	processorConfig := &Config{
-		Adapter:     processorAdapterMock,
+
 		Command:     `echo "Hello successful test"`,
 		CommandPath: ".",
 		Concurrency: 1,
@@ -126,7 +133,7 @@ func BenchmarkProcessorSuccessfulJobs(b *testing.B) {
 	}
 
 	var w bytes.Buffer
-	processor := New(processorConfig, &w, &w)
+	processor := New(processorConfig, processorAdapterMock, newLogger(), &w, &w)
 	for n := 0; n < b.N; n++ {
 		processor.Start()
 	}
@@ -137,14 +144,14 @@ func TestProcessorFailingJob(t *testing.T) {
 	failStreamAdapterMock := &failProcessorAdapterMock{adapterMock}
 
 	processorConfig := &Config{
-		Adapter:     failStreamAdapterMock,
+
 		Command:     `cd nonexistingdir"`,
 		CommandPath: ".",
 		Concurrency: 1,
 		WaitTimeout: 200,
 	}
 	w := &dummyWriter{}
-	processor := New(processorConfig, w, w)
+	processor := New(processorConfig, failStreamAdapterMock, newLogger(), w, w)
 	processor.Start()
 }
 
@@ -153,14 +160,14 @@ func BenchmarkProcessorFailedJobs(b *testing.B) {
 	failStreamAdapterMock := &failProcessorAdapterMock{adapterMock}
 
 	processorConfig := &Config{
-		Adapter:     failStreamAdapterMock,
+
 		Command:     `cd nonexistingdir"`,
 		CommandPath: ".",
 		Concurrency: 1,
 		WaitTimeout: 200,
 	}
 	w := &dummyWriter{}
-	processor := New(processorConfig, w, w)
+	processor := New(processorConfig, failStreamAdapterMock, newLogger(), w, w)
 	for n := 0; n < b.N; n++ {
 		processor.Start()
 	}
@@ -178,10 +185,8 @@ func TestNewMessage(t *testing.T) {
 func TestAdapterOpenError(t *testing.T) {
 	adapterMock := createProcessorAdapterMock(t, successfullJobs)
 	failAdapterOpenCloseMock := &failAdapterOpenCloseMock{adapterMock}
-	processorConfig := &Config{
-		Adapter: failAdapterOpenCloseMock,
-	}
-	sp := New(processorConfig, nil, nil)
+	processorConfig := &Config{}
+	sp := New(processorConfig, failAdapterOpenCloseMock, newLogger(), nil, nil)
 	err := sp.Start()
 	if err == nil {
 		t.Error("Expected connection open to fail")

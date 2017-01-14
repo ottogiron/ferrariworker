@@ -5,6 +5,9 @@ import (
 	"log"
 	"time"
 
+	"os"
+
+	"github.com/inconshreveable/log15"
 	"github.com/ottogiron/ferrariworker/processor"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -104,14 +107,16 @@ func adapterCommandAction(cmd *cobra.Command, args []string) {
 	}
 	adapter := factory.New(config)
 	processorConfig := &processor.Config{
-		Adapter:     adapter,
+
 		Command:     command,
 		CommandPath: commandPath,
 		Concurrency: concurrency,
 		WaitTimeout: waitTimeout,
 	}
+	logger := log15.New()
+	logger.SetHandler(log15.StreamHandler(os.Stdout, log15.LogfmtFormat()))
 	//Default stdout and stder to os.Stdout and os.Stderr
-	sp := processor.New(processorConfig, nil, nil)
+	sp := processor.New(processorConfig, adapter, logger, nil, nil)
 	err = sp.Start()
 	if err != nil {
 		log.Fatalf("Could not start  processing %s", err)

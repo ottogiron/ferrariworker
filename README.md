@@ -175,7 +175,7 @@ type Adapter interface {
   Open() error
   Close() error
   Messages(context.Context) (<-chan Message, error)
-  ResultHandler(jobResult *JobResult, message Message) error
+  ResultHandler(jobResult *worker.JobResult, message Message) error
 }
 ```
 
