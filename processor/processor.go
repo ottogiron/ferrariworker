@@ -98,7 +98,7 @@ func (sp *processor) Start() error {
 						j := job{sp.config.Command, sp.config.CommandPath, m.Payload}
 						jobResult, err := sp.processJob(j)
 						if err != nil {
-							//just return for now, job output should be already in stdout
+							sp.logger.Error("Failed to process Job", "worker_id", jobResult.WorkerID, "job_id", jobResult.ID)
 							return
 						}
 						sp.adapter.ResultHandler(jobResult, m)

@@ -14,8 +14,14 @@ import (
 //ResultPersistScheduler schedules operations on top of a backend
 type ResultPersistScheduler interface {
 	Schedule(jobResult *worker.JobResult) error
+	Flush() error
 	Start()
 	Stop()
+}
+
+//NewResultScheduler returns a new instance of a result scheduler
+func NewResultScheduler(interval time.Duration) ResultPersistScheduler {
+	return &backendScheduler{}
 }
 
 type backendScheduler struct {
@@ -27,7 +33,7 @@ type backendScheduler struct {
 	logger     log15.Logger
 }
 
-func (b *backendScheduler) Persist(jobResult *worker.JobResult) error {
+func (b *backendScheduler) Schedule(jobResult *worker.JobResult) error {
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	b.jobResults = append(b.jobResults, jobResult)
@@ -53,6 +59,11 @@ func (b *backendScheduler) Start() {
 			}
 		}
 	}()
+}
+
+func (b *backendScheduler) Flush() error {
+	err := b.persistAllJobResults()
+	return errors.Wrap(err, "Failed to Flush the remaining jobResults")
 }
 
 func (b *backendScheduler) Stop() {
