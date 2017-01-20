@@ -77,7 +77,7 @@ func New(config *Config, stdout io.Writer, stderr io.Writer) Processor {
 	if stderr == nil {
 		stdout = os.Stderr
 	}
-	return &processor{config, stdout, stderr}
+	return &processor{config: config, stdout: stdout, stderr: stderr}
 }
 
 //Start starts processing
@@ -132,7 +132,8 @@ func (sp *processor) processJob(job job) *JobResult {
 	status := JobStatusSuccess
 	if err != nil {
 		status = JobStatusFailed
-		errMsg := fmt.Sprintf("-Failed to run command  %s %s", job.command, err)
+		errMsg := fmt.Sprintf("Failed to run command  %s %s", job.command, err)
+		fmt.Print(errMsg)
 		output.WriteString(errMsg)
 	} else {
 		if success := cmd.ProcessState.Success(); !success {

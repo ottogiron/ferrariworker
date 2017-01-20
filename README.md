@@ -45,8 +45,9 @@ ferrariworker process rabbit \
     --queue-name=hello \
     --consumer-auto-ack=true \
     --command="node hello.js" \
-    --command-run-path="/Users/ogiron" \
+    --command-run-path="/Users/otto" \
     --exchange="test-exchange" \
+    --routing-key="text-key" \
     --max-concurrency=8
 ```
 
@@ -57,7 +58,7 @@ ferrariworker process rabbit \
 ```javascript
 console.time("hello task");
 
-const payloadbase64 = process.argv[2];`
+const payloadbase64 = process.argv[2];
 var buf = new Buffer(payloadbase64, 'base64');
 console.log(buf.toString());
 console.timeEnd("hello task")
