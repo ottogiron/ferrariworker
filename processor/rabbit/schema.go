@@ -15,9 +15,9 @@ var schema = &processor.AdapterConfigurationSchema{
 			Optional:    true,
 		},
 		processor.AdapterConfigurationProperty{
-			Name:        bindingKey,
+			Name:        routingKey,
 			Type:        processor.PropertyTypeString,
-			Description: "Binding Key",
+			Description: "Routing Key",
 			Optional:    false,
 		},
 		processor.AdapterConfigurationProperty{

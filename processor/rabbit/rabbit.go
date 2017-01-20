@@ -10,7 +10,7 @@ import (
 
 const (
 	uriKey         = "uri"
-	bindingKey     = "binding-key"
+	routingKey     = "binding-key"
 	bindingWaitKey = "binding-wait"
 	//Queue Arguments
 	queueNameKey           = "queue-name"
@@ -109,7 +109,7 @@ func (m *rabbitProcessorAdapter) Messages(ctx context.Context) (<-chan processor
 
 	if err = ch.QueueBind(
 		m.config.GetString(queueNameKey),    // name of the queue
-		m.config.GetString(bindingKey),      // bindingKey
+		m.config.GetString(routingKey),      // bindingKey
 		m.config.GetString(exchangeNameKey), // sourceExchange
 		m.config.GetBoolean(bindingWaitKey), // noWait
 		nil, // arguments
