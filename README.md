@@ -46,7 +46,7 @@ ferrariworker process rabbit \
     --consumer-auto-ack=true \
     --command="node hello.js" \
     --command-run-path="/Users/ogiron" \
-    --exchange="test-exchange"
+    --exchange="test-exchange" \
     --max-concurrency=8
 ```
 
