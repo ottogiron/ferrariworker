@@ -10,7 +10,7 @@ import (
 
 const (
 	uriKey         = "uri"
-	routingKey     = "binding-key"
+	routingKey     = "routing-key"
 	bindingWaitKey = "binding-wait"
 	//Queue Arguments
 	queueNameKey           = "queue-name"
