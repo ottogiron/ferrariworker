@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/ottogiron/ferrariworker/processor"
+	"github.com/ferrariframework/ferrariworker/processor"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

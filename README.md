@@ -2,7 +2,7 @@
 
 ## Process   programs in any language from different  sources
 
-[![Build Status](https://travis-ci.org/ottogiron/ferrariworker.svg?branch=master)](https://travis-ci.org/ottogiron/ferrariworker)
+[![Build Status](https://travis-ci.org/ferrariframework/ferrariworker.svg?branch=master)](https://travis-ci.org/ferrariframework/ferrariworker)
 
 ## Installing
 
@@ -10,7 +10,7 @@
 
 ```bash
 # add tap
-$ brew tap ottogiron/ferrariworker https://github.com/ottogiron/homebrew-ferrariworker
+$ brew tap ferrariframework/ferrariworker https://github.com/ottogiron/homebrew-ferrariworker
 
 # Update
 $ brew update
@@ -24,7 +24,7 @@ $ ferrariworker version
 
 ### Linux
 
-Download the linux tar file from the [releases](https://github.com/ottogiron/ferrariworker/releases) page
+Download the linux tar file from the [releases](https://github.com/ferrariframework/ferrariworker/releases) page
 
 ```bash
 # Extract the binary
@@ -211,7 +211,7 @@ Then the adapter has to be imported in ***cmd/modules.go*** using the blank iden
 package cmd
 
 import (
-    _ "github.com/ottogiron/ferrariworker/processor/rabbit"
+    _ "github.com/ferrariframework/ferrariworker/processor/rabbit"
 )
 ```
 

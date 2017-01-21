@@ -1,6 +1,6 @@
 package rabbit
 
-import "github.com/ottogiron/ferrariworker/processor"
+import "github.com/ferrariframework/ferrariworker/processor"
 
 var schema = &processor.AdapterConfigurationSchema{
 	Name:             "rabbit",

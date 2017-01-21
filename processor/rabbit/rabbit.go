@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/ottogiron/ferrariworker/processor"
+	"github.com/ferrariframework/ferrariworker/processor"
 	"github.com/streadway/amqp"
 )
 

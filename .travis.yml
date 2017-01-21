@@ -1,18 +1,16 @@
 language: go
 go:
-  - 1.7
+- 1.7
 install:
-  - mkdir -p $GOPATH/bin
-  - curl https://glide.sh/get | sh
+- mkdir -p $GOPATH/bin
+- curl https://glide.sh/get | sh
 deploy:
   provider: releases
   api_key:
-    secure: NXLGPPmTO8r4TQJTpyPcPaFoL2YwwEhksoBNjqhAAehOezCMkqhYwOaKEVnyVEzwnxZDpf8GBCBqe9LeaLUrpgusHtUsQfjcpLMSYo4gyXriKKDsb1i2RzKfKn5kbe5Yq0hlkL7WY0zmYYNOTyqElpxN/IBvQrxLw8o3zrta4yuM+HlEEFff6/jfcf372ZwvYutKux8nZJvZC/9DbAsnJqeFp8UrJMajW4WjKfJcebObHP1Hz+RS4ORRzLWOXudX1nFnXjLZs0NJQwsf7Kin/ltCX1iQv4k7x9l55DkVM8aCPl/ndNvf/iqtfHsv9llhndx53Zau77VWBw1lChL+g8nXg7o5d7PjZeYFgrjizdQDqKrOeqMiVEynTBZLxdbvggw5HGZe8slkw+YOvdKZSoUVQQWieh8KpCYq5IMQIPv6I47ENkNq2kAHP8PUb2d3VuOdkFuwGT3ZU86EvF4MMInsrtN4zvtC2v+q+u7jNlLMEEP2wycqrnkqLCBCZTRBt83tpjELrB5dbmaabCqnGkFBQ6IIL+q7c7B6xWBlaAGGr2YX/84Uon7FHpLxQiv5JY4nSXpo8NFvDPfDA6t3sVy9Doe17Ki6hYUg2LCdAKEIplHGK4dU3mB1Hi3sDvZWRsw3WUG28SFcFQ54NvvLpHXsu9OlcCLraveFp440rzQ=
-  file:
-    - build/dist/ferrariworker.darwin-amd64.tar.gz
-    - build/dist/ferrariworker.linux-amd64.tar.gz
-  skip_cleanup: true
-
+    secure: UCZA08g3fwXEhGh8T63QMww9e5RwdZ1LAH37qTrx43bqaWpMMUKUYj0kNXhG+Lu/BRjTs5LWVhXNIEc1hr8vXID2jhHnF1NjvK/SuXlxMF+aN8UxDm8DCYnWRXmQNv+lPFZ4LwCsd+UhqrPkYODa30EuQo/sYMwH/NnyRm9JLKXjrLDvHeTfNqZ8lCY7bzb7dfDT6Amd3+pN39b+qCKmzWe7L65i1FUs7HzgT5tXwyIco7KKbzl1nwBENRSrKQlP2jnKcaOohlObL4vkYgDEhyf+JTh6OJERApRbhMOZ+eZFQKiwb6AzjAifyVc4imD/RPCJAsiXMvJmQ+b5MgBwhR5X8GGm978qzvHB2KhHRoRHeyMeqJKx48ya/1hRb364b6VUNVx4gn4EBysTunJbMvnWqdOctRBsdsnRXD5dRBSni0pD6KEh8sIVnmj145TrTU3Tla0wrE/MCtRCUWu/XyY1K35v9CI/l/fOJ7xxhxLeeBAOFkuHbl1ZglPkJXNOavJnSsLgnjYO4kNH4Ge7yEcrDMfOg04qTQE4JoqF+1qAJmvv5aronEVpNAXB657YQjKHMHtBlY8XLEl2g8stAEItoIjIYD+yFSWW9+V4HCgu7Jv9nkzjQC9y4kDIqEpsSKltRfHkylJeM1+jK+R9kd3PYI1IeFq8/k6fgy90kZY=
+  file: 
+   - build/dist/ferrariworker.linux-amd64.tar.gz
+   - build/dist/ferrariworker.darwin-amd64.tar.gz
   on:
+    go: 1.7
     tags: true
-    go: '1.7'

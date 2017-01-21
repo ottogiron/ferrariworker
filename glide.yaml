@@ -1,4 +1,4 @@
-package: github.com/ottogiron/ferrariworker
+package: github.com/ferrariframework/ferrariworker
 import:
 - package: github.com/spf13/cast
 - package: github.com/spf13/cobra

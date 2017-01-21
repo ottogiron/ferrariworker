@@ -1,5 +1,5 @@
 package cmd
 
 import (
-	_ "github.com/ottogiron/ferrariworker/processor/rabbit"
+	_ "github.com/ferrariframework/ferrariworker/processor/rabbit"
 )

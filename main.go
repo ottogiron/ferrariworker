@@ -1,6 +1,6 @@
 package main
 
-import "github.com/ottogiron/ferrariworker/cmd"
+import "github.com/ferrariframework/ferrariworker/cmd"
 
 func main() {
 	cmd.Execute()
