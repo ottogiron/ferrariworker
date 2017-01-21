@@ -16,8 +16,6 @@ SOURCE_DIRS := $(shell go list ./... | grep -v /vendor/)
 
 all: test package-linux package-darwin
 
-build-release: container
-
 lint:
 	@go fmt $(SOURCE_DIRS)
 	@go vet $(SOURCE_DIRS)
@@ -30,11 +28,6 @@ install_dependencies:
 
 cover: 
 	gocov test $(SOURCE_DIRS) | gocov-html > coverage.html && open coverage.html
-	
-
-image: binaries
-	docker-flow build -f docker/Dockerfile
-
 
 binaries: binary-darwin binary-linux
 
