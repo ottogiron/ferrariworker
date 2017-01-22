@@ -10,29 +10,29 @@ import (
 
 const (
 	uriKey         = "uri"
-	routingKey     = "routing-key"
-	bindingWaitKey = "binding-wait"
+	routingKey     = "routing_key"
+	bindingWaitKey = "binding_wait"
 	//Queue Arguments
-	queueNameKey           = "queue-name"
-	queueDurableKey        = "queue-durable"
-	queueDeleteWhenUsedKey = "queue-delete-when-used"
-	queueExclusiveKey      = "queue-exclusive"
-	queueNoWaitKey         = "queue-no-wait"
-	queuArgumentsKey       = "queue-arguments"
+	queueNameKey           = "queue_name"
+	queueDurableKey        = "queue_durable"
+	queueDeleteWhenUsedKey = "queue_delete_when_used"
+	queueExclusiveKey      = "queue_exclusive"
+	queueNoWaitKey         = "queue_no_wait"
+	queuArgumentsKey       = "queue_arguments"
 	//Consumer arguments
-	consumerTagKey       = "consumer-tag"
-	consumerAutoAckKey   = "consumer-auto-ack"
-	consumerExclusiveKey = "consumer-exclusive"
-	consumerNoLocalKey   = "consumer-no-local"
-	consumerNoWaitKey    = "consumer-no-wait"
-	consumerArgsKey      = "consumer-args"
+	consumerTagKey       = "consumer_tag"
+	consumerAutoAckKey   = "consumer_auto_ack"
+	consumerExclusiveKey = "consumer_exclusive"
+	consumerNoLocalKey   = "consumer_no_local"
+	consumerNoWaitKey    = "consumer_no_wait"
+	consumerArgsKey      = "consumer_args"
 	//Exchange configurations
 	exchangeNameKey               = "exchange"
-	exchangeTypeKey               = "exchange-type"
-	exchangeDurableKey            = "exchange-durable"
-	exchangeDeleteWhenCompleteKey = "exchange-delete-when-complete"
-	exchangeInternalKey           = "exchange-internal"
-	exchangeNowaitKey             = "exchange-no-wait"
+	exchangeTypeKey               = "exchange_type"
+	exchangeDurableKey            = "exchange_durable"
+	exchangeDeleteWhenCompleteKey = "exchange_delete_when_complete"
+	exchangeInternalKey           = "exchange_internal"
+	exchangeNowaitKey             = "exchange_no_wait"
 )
 
 type factory struct{}

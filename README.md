@@ -42,13 +42,13 @@ This example shows jobs processing from rabbitmq using a Node.js script as job p
 ```bash
 ferrariworker process rabbit \
     --uri=amqp://guest:guest@localhost:5672 \
-    --queue-name=hello \
-    --consumer-auto-ack=true \
+    --queue_name=hello \
+    --consumer_auto-ack=true \
     --command="node hello.js" \
-    --command-run-path="/Users/otto" \
+    --command_run_path="/Users/otto" \
     --exchange="test-exchange" \
-    --routing-key="text-key" \
-    --max-concurrency=8
+    --routing_key="text-key" \
+    --max_concurrency=8
 ```
 
 ### Example job script for Node

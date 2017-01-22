@@ -61,6 +61,7 @@ type JobResultHanlder func(jobResult *JobResult, message *Message)
 
 //Config configuration for a Processor processor
 type Config struct {
+	WorkerID    string
 	Adapter     Adapter
 	Command     string
 	CommandPath string
