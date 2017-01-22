@@ -5,5 +5,4 @@ import:
 - package: github.com/spf13/viper
 - package: github.com/streadway/amqp
 - package: github.com/ferrariframework/ferrariserver
-  subpackages:
-  - grpc/gen
+  version: ferrariworker-integration

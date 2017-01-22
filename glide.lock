@@ -1,8 +1,8 @@
-hash: fe677de824d9a104f7fb3bb94809e47e90ee10049075ead7c299bc105d7a2d95
-updated: 2017-01-21T23:45:58.632626698-06:00
+hash: 50bca6010ec0fb37a5bf34780ddfa3028367203f946ae3cf04be24aca20e4c85
+updated: 2017-01-22T00:17:24.100157875-06:00
 imports:
 - name: github.com/ferrariframework/ferrariserver
-  version: 4110e13bf64c363dc2e6dd2485e56b8e538c1939
+  version: 933d7637a3ceb00a54adac65f3a4e582ca79b246
   subpackages:
   - grpc/gen
 - name: github.com/fsnotify/fsnotify
