@@ -31,7 +31,6 @@ const (
 	tlsKey                = "tls"
 	caFileKey             = "ca_file"
 	serverHostOverrideKey = "server_host_override"
-	workerIDKey           = "worker_id"
 )
 
 // processCmd represents the process command
@@ -57,7 +56,7 @@ func init() {
 	processCmd.PersistentFlags().StringP(commandKey, "c", `echo "You should  set your own command :)"`, "Command to be run when a new job arrives ")
 	processCmd.PersistentFlags().IntP(concurrencyKey, "m", 1, "Max number of jobs proccessed concurrently.")
 	processCmd.PersistentFlags().StringP(commandPathKey, "p", ".", "Running path for the command")
-	processCmd.PersistentFlags().IntP(waitTimeoutKey, "p", 200, "Time to wait in milliseconds for existing jobs to be processed. ")
+	processCmd.PersistentFlags().IntP(waitTimeoutKey, "w", 200, "Time to wait in milliseconds for existing jobs to be processed. ")
 	processCmd.PersistentFlags().BoolP(tlsKey, "t", false, "Connection uses TLS if true, else plain TCP")
 	processCmd.PersistentFlags().StringP(serverAddressKey, "s", "127.0.0.1:4051", "The server address in the format of host:port")
 	processCmd.PersistentFlags().String(caFileKey, "ca.pem", "he file containning the CA root cert file")
@@ -119,7 +118,6 @@ func adapterCommandAction(cmd *cobra.Command, args []string) {
 	concurrency := viper.GetInt(concurrencyKey)
 	commandPath := viper.GetString(commandPathKey)
 	waitTimeout := time.Duration(viper.GetInt(waitTimeoutKey))
-	workerID := viper.GetString(workerIDKey)
 
 	//Server flags
 	tls := viper.GetBool(tlsKey)
@@ -137,7 +135,7 @@ func adapterCommandAction(cmd *cobra.Command, args []string) {
 	}
 
 	err = jobLogStream.Send(&gen.Log{
-		WorkerId: workerID,
+		WorkerId: "dummyworker123",
 		JobId:    "dummy123",
 		Message:  []byte("something"),
 	})
@@ -154,7 +152,7 @@ func adapterCommandAction(cmd *cobra.Command, args []string) {
 
 	adapter := factory.New(config)
 	processorConfig := &processor.Config{
-		WorkerID:    workerID,
+		WorkerID:    "dummyWorkerID",
 		Adapter:     adapter,
 		Command:     command,
 		CommandPath: commandPath,

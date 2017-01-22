@@ -43,7 +43,7 @@ This example shows jobs processing from rabbitmq using a Node.js script as job p
 ferrariworker process rabbit \
     --uri=amqp://guest:guest@localhost:5672 \
     --queue_name=hello \
-    --consumer_auto-ack=true \
+    --consumer_auto_ack=true \
     --command="node hello.js" \
     --command_run_path="/Users/otto" \
     --exchange="test-exchange" \
