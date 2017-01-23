@@ -1,6 +1,6 @@
 # Ferrari Worker
 
-## Process programs in any language from different  sources. Ferrariworker depends on [Ferrari Server](https://github.com/ferrariframework/ferrariserver) to keep track of the runnig worker and jobs.
+Process programs in any language from different  sources. Ferrariworker depends on [Ferrari Server](https://github.com/ferrariframework/ferrariserver) to keep track of the runnig worker and jobs.
 
 [![Build Status](https://travis-ci.org/ferrariframework/ferrariworker.svg?branch=master)](https://travis-ci.org/ferrariframework/ferrariworker)
 
