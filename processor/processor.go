@@ -139,11 +139,11 @@ func (sp *processor) processJob(job job) *JobResult {
 	var output bytes.Buffer
 
 	sjob, err := sp.jobServiceClient.RegisterJob(context.Background(), &gen.Job{
-		WorkerId: "dummy123",
+		WorkerId: sp.config.WorkerID,
 	})
 
 	if err != nil {
-		log.Printf("Failed to register job workerID %s", "dummy123")
+		log.Printf("Failed to register job workerID %s", sp.config.WorkerID)
 	}
 	cmd, close := sp.prepareCommand(cmdStr, job.commandPath, sjob.GetWorkerId(), sjob.GetId(), &output)
 	defer close()
