@@ -46,11 +46,12 @@ ferrariworker process rabbit \
     --server_addr="127.0.0.1:4151"
     --uri=amqp://guest:guest@localhost:5672 \
     --queue_name=hello \
-    --consumer_auto_ack=true \
-    --command="node hello.js" \
-    --command_run_path="/Users/otto" \
+    --queue_durable=true \
+    --consumer_auto_ack=false \
+    --command="node worker.js" \
+    --command_run_path="/Users/ottogiron/workspace/helloworker" \
     --exchange="test-exchange" \
-    --routing_key="text-key" \
+    --routing_key="test-key" \
     --max_concurrency=8
 ```
 

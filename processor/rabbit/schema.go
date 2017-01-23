@@ -66,7 +66,7 @@ var schema = &processor.AdapterConfigurationSchema{
 			Name:        consumerTagKey,
 			Type:        processor.PropertyTypeString,
 			Description: "Consumer tag",
-			Default:     "",
+			Default:     "simple-consumer",
 			Optional:    true,
 		},
 		processor.AdapterConfigurationProperty{
@@ -132,6 +132,19 @@ var schema = &processor.AdapterConfigurationSchema{
 			Description: "Exchange no wait",
 			Default:     false,
 			Optional:    true,
+		},
+		//Message configuration
+		processor.AdapterConfigurationProperty{
+			Name:        onSuccessKey,
+			Type:        processor.PropertyTypeString,
+			Description: `Action to execute on a message when the job succeded. Applied only when consumer_auto_ack=false. Example. --on_sucess="ack:false". Possible values |ack:<bool>|reject:<bool>|neck:multiple:<bool>,requeue:<bool>|`,
+			Default:     "ack:false",
+		},
+		processor.AdapterConfigurationProperty{
+			Name:        onFailedKey,
+			Type:        processor.PropertyTypeString,
+			Description: `Action to execute on a message when the job failed. Applied only when consumer_auto_ack=false. Example. --on_failed="ack:true". Possible values |ack:<bool>|reject:<bool>|neck:multiple:<bool>,requeue:<bool>|`,
+			Default:     "ack:true",
 		},
 	},
 }

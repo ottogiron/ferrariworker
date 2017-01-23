@@ -3,8 +3,13 @@ package rabbit
 import (
 	"context"
 	"fmt"
+	"log"
+
+	"strings"
 
 	"github.com/ferrariframework/ferrariworker/processor"
+	"github.com/pkg/errors"
+	"github.com/spf13/cast"
 	"github.com/streadway/amqp"
 )
 
@@ -33,6 +38,9 @@ const (
 	exchangeDeleteWhenCompleteKey = "exchange_delete_when_complete"
 	exchangeInternalKey           = "exchange_internal"
 	exchangeNowaitKey             = "exchange_no_wait"
+	//Message configurations
+	onSuccessKey = "on_sucess"
+	onFailedKey  = "on_failed"
 )
 
 type factory struct{}
@@ -138,8 +146,10 @@ func (m *rabbitProcessorAdapter) Messages(ctx context.Context) (<-chan processor
 			case d := <-msgs:
 				msgChannel <- processor.Message{Payload: d.Body, OriginalMessage: d}
 			case <-ctx.Done():
-				close(msgChannel)
+				log.Println("Closing rabbit channel")
+				ch.Cancel(m.config.GetString(consumerTagKey), true)
 				ch.Close()
+				close(msgChannel)
 				return
 			}
 		}
@@ -150,5 +160,58 @@ func (m *rabbitProcessorAdapter) Messages(ctx context.Context) (<-chan processor
 
 //RabbitResultHanlder post process when the job is already done
 func (m *rabbitProcessorAdapter) ResultHandler(jobResult *processor.JobResult, message processor.Message) error {
+	autoAck := m.config.GetBoolean(consumerAutoAckKey)
+	//Only perform this logic if autoAck == false
+	if !autoAck {
+		originalMessage := message.OriginalMessage.(amqp.Delivery)
+		switch jobResult.Status {
+		case processor.JobStatusSuccess:
+			return m.applyAction(jobResult, &originalMessage, onSuccessKey)
+
+		case processor.JobStatusFailed:
+			return m.applyAction(jobResult, &originalMessage, onFailedKey)
+		}
+	}
+
 	return nil
+}
+
+func (m *rabbitProcessorAdapter) applyAction(jobResult *processor.JobResult, delivery *amqp.Delivery, actionKey string) error {
+	messageAction, value := parseMessageAction(m.config.GetString(actionKey))
+	if messageAction == "ack" {
+		err := delivery.Ack(cast.ToBool(value))
+		return errors.Wrapf(err, "Failed to apply ack on_success action for message workerID=%s jobID=%s", jobResult.WorkerID, jobResult.JobID)
+	} else if messageAction == "reject" {
+		err := delivery.Reject(cast.ToBool(value))
+		return errors.Wrapf(err, "Failed to apply reject on_success action for message workerID=%s jobID=%s", jobResult.WorkerID, jobResult.JobID)
+	} else if messageAction == "nack" {
+		tokens := strings.Split(cast.ToString(value), ",")
+		var multiple bool
+		var requeue bool
+		if len(tokens) == 2 {
+			multiple = cast.ToBool(tokens[0])
+			requeue = cast.ToBool(tokens[1])
+		}
+		err := delivery.Nack(multiple, requeue)
+		if err != nil {
+			return errors.Wrapf(err, "Failed to apply nack on_success action for message workerID=%s jobID=%s", jobResult.WorkerID, jobResult.JobID)
+		}
+
+	} else {
+		//Apply default action
+		if actionKey == onSuccessKey {
+			delivery.Ack(false)
+		} else if actionKey == onFailedKey {
+			delivery.Ack(true)
+		}
+	}
+	return nil
+}
+
+func parseMessageAction(action string) (string, interface{}) {
+	tokens := strings.Split(action, ":")
+	if len(tokens) == 2 {
+		return tokens[0], tokens[1]
+	}
+	return "", false
 }

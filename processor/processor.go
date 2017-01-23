@@ -59,8 +59,10 @@ type Message struct {
 
 //JobResult Represents the result of a processed Job
 type JobResult struct {
-	Status JobStatus
-	Output []byte
+	WorkerID string
+	JobID    string
+	Status   JobStatus
+	Output   []byte
 }
 
 //JobResultHanlder Handler for the result of a processed Job
@@ -101,6 +103,7 @@ func (sp *processor) Start() error {
 	wg.Add(sp.config.Concurrency)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
 	msgs, err := sp.config.Adapter.Messages(ctx)
 	if err != nil {
 		return fmt.Errorf("Failed to get messages from adapter %s", err)
@@ -114,7 +117,10 @@ func (sp *processor) Start() error {
 					if ok {
 						j := job{sp.config.Command, sp.config.CommandPath, m.Payload}
 						jobResult := sp.processJob(j)
-						sp.config.Adapter.ResultHandler(jobResult, m)
+						err := sp.config.Adapter.ResultHandler(jobResult, m)
+						if err != nil {
+							log.Print("Error when running adapter ResultHandler \n", err)
+						}
 					} else {
 
 						wg.Done()
@@ -160,8 +166,10 @@ func (sp *processor) processJob(job job) *JobResult {
 		}
 	}
 	jobResult := &JobResult{
-		Status: status,
-		Output: output.Bytes(),
+		WorkerID: sjob.GetWorkerId(),
+		JobID:    sjob.GetId(),
+		Status:   status,
+		Output:   output.Bytes(),
 	}
 
 	return jobResult
