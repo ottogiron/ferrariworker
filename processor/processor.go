@@ -6,18 +6,24 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/ferrariframework/ferrariserver/grpc/gen"
 )
 
+//JobStatus represents a job final status
 type JobStatus int
 
 const (
+	//JobStatusSuccess represents a job success
 	JobStatusSuccess JobStatus = 0
-	JobStatusFailed  JobStatus = 1
+	//JobStatusFailed represents a failed job
+	JobStatusFailed JobStatus = 1
 )
 
 var factoryRegistry = map[string]*configurationRegistry{}
@@ -33,9 +39,10 @@ type configurationRegistry struct {
 }
 
 type processor struct {
-	config *Config
-	stdout io.Writer
-	stderr io.Writer
+	config           *Config
+	stdout           io.Writer
+	stderr           io.Writer
+	jobServiceClient gen.JobServiceClient
 }
 
 type job struct {
@@ -70,15 +77,15 @@ type Config struct {
 }
 
 //New creates a new instance of Processor processor
-func New(config *Config, stdout io.Writer, stderr io.Writer) Processor {
+func New(config *Config, jobServiceClient gen.JobServiceClient, stdout io.Writer, stderr io.Writer) Processor {
 	if stdout == nil {
 		stdout = os.Stdout
 	}
 
 	if stderr == nil {
-		stdout = os.Stderr
+		stderr = os.Stderr
 	}
-	return &processor{config: config, stdout: stdout, stderr: stderr}
+	return &processor{config: config, jobServiceClient: jobServiceClient, stdout: stdout, stderr: stderr}
 }
 
 //Start starts processing
@@ -109,10 +116,12 @@ func (sp *processor) Start() error {
 						jobResult := sp.processJob(j)
 						sp.config.Adapter.ResultHandler(jobResult, m)
 					} else {
+
 						wg.Done()
 						return
 					}
 				case <-time.After(sp.config.WaitTimeout * time.Millisecond):
+
 					wg.Done()
 					return
 				}
@@ -128,13 +137,22 @@ func (sp *processor) processJob(job job) *JobResult {
 	encodedPayload := base64.StdEncoding.EncodeToString(job.payload)
 	cmdStr := job.command + " " + string(encodedPayload)
 	var output bytes.Buffer
-	cmd := sp.prepareCommand(cmdStr, job.commandPath, &output)
-	err := cmd.Run()
+
+	sjob, err := sp.jobServiceClient.RegisterJob(context.Background(), &gen.Job{
+		WorkerId: "dummy123",
+	})
+
+	if err != nil {
+		log.Printf("Failed to register job workerID %s", "dummy123")
+	}
+	cmd, close := sp.prepareCommand(cmdStr, job.commandPath, sjob.GetWorkerId(), sjob.GetId(), &output)
+	defer close()
+	err = cmd.Run()
 	status := JobStatusSuccess
 	if err != nil {
 		status = JobStatusFailed
 		errMsg := fmt.Sprintf("Failed to run command  %s %s", job.command, err)
-		fmt.Print(errMsg)
+		log.Print(errMsg)
 		output.WriteString(errMsg)
 	} else {
 		if success := cmd.ProcessState.Success(); !success {
@@ -150,17 +168,32 @@ func (sp *processor) processJob(job job) *JobResult {
 }
 
 //prepareCommand executes a command outputs to stdout
-func (sp *processor) prepareCommand(commandStr string, path string, output io.Writer) *exec.Cmd {
+func (sp *processor) prepareCommand(commandStr, path, workerID, jobID string, output io.Writer) (*exec.Cmd, func()) {
 	cmdTokens := strings.Fields(commandStr)
 	commandName := cmdTokens[:1]
 	args := cmdTokens[1:]
 	os.Chdir(path)
 	cmd := exec.Command(commandName[0], args...)
+
 	stdout := io.MultiWriter(output, sp.stdout)
 	stderr := io.MultiWriter(output, sp.stderr)
-	cmd.Stdout = stdout
-	cmd.Stderr = stderr
-	return cmd
+
+	logStream, err := sp.jobServiceClient.RecordLog(context.Background())
+
+	if err != nil {
+		log.Printf("Failed to get stdout stream for job workerID=%s jobID=%s", workerID, jobID)
+	}
+
+	stdoutForwarder := NewJobLogForwarder(workerID, jobID, logStream, stdout)
+
+	stdErrForwarder := NewJobLogForwarder(workerID, jobID, logStream, stderr)
+
+	cmd.Stdout = stdoutForwarder
+	cmd.Stderr = stdErrForwarder
+
+	return cmd, func() {
+		logStream.CloseAndRecv()
+	}
 }
 
 //RegisterAdapterFactory registers a new factory for creating adapters

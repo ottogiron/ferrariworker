@@ -6,8 +6,15 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"strings"
 	"testing"
+
+	gcontext "golang.org/x/net/context"
+
+	"google.golang.org/grpc"
+
+	"github.com/ferrariframework/ferrariserver/grpc/gen"
 )
 
 var successfullJobs = []Message{
@@ -19,10 +26,28 @@ var successfullJobs = []Message{
 	Message{Payload: []byte("message 6")},
 }
 
-type dummyWriter struct{}
+type jobServiceClientMock struct {
+	gen.JobServiceClient
+}
 
-func (dw *dummyWriter) Write(p []byte) (n int, err error) {
-	return 1, nil
+func (j *jobServiceClientMock) RegisterJob(ctx gcontext.Context, in *gen.Job, opts ...grpc.CallOption) (*gen.Job, error) {
+	return in, nil
+}
+
+func (j *jobServiceClientMock) RecordLog(ctx gcontext.Context, opts ...grpc.CallOption) (gen.JobService_RecordLogClient, error) {
+	return &jobServiceRecordLogClientMock{}, nil
+}
+
+type jobServiceRecordLogClientMock struct {
+	gen.JobService_RecordLogClient
+}
+
+func (j *jobServiceRecordLogClientMock) Send(*gen.Log) error {
+	return nil
+}
+
+func (j *jobServiceRecordLogClientMock) CloseAndRecv() (*gen.Empty, error) {
+	return &gen.Empty{}, nil
 }
 
 func createProcessorAdapterMock(t testing.TB, messages []Message) *processorAdapterMock {
@@ -111,7 +136,7 @@ func TestProcessorSuccessfulJobs(t *testing.T) {
 		WaitTimeout: 200,
 	}
 	var w bytes.Buffer
-	processor := New(processorConfig, &w, &w)
+	processor := New(processorConfig, &jobServiceClientMock{}, &w, &w)
 	processor.Start()
 }
 
@@ -126,7 +151,7 @@ func BenchmarkProcessorSuccessfulJobs(b *testing.B) {
 	}
 
 	var w bytes.Buffer
-	processor := New(processorConfig, &w, &w)
+	processor := New(processorConfig, &jobServiceClientMock{}, &w, &w)
 	for n := 0; n < b.N; n++ {
 		processor.Start()
 	}
@@ -143,8 +168,8 @@ func TestProcessorFailingJob(t *testing.T) {
 		Concurrency: 1,
 		WaitTimeout: 200,
 	}
-	w := &dummyWriter{}
-	processor := New(processorConfig, w, w)
+	w := ioutil.Discard
+	processor := New(processorConfig, &jobServiceClientMock{}, w, w)
 	processor.Start()
 }
 
@@ -159,8 +184,8 @@ func BenchmarkProcessorFailedJobs(b *testing.B) {
 		Concurrency: 1,
 		WaitTimeout: 200,
 	}
-	w := &dummyWriter{}
-	processor := New(processorConfig, w, w)
+	w := ioutil.Discard
+	processor := New(processorConfig, &jobServiceClientMock{}, w, w)
 	for n := 0; n < b.N; n++ {
 		processor.Start()
 	}
@@ -181,7 +206,7 @@ func TestAdapterOpenError(t *testing.T) {
 	processorConfig := &Config{
 		Adapter: failAdapterOpenCloseMock,
 	}
-	sp := New(processorConfig, nil, nil)
+	sp := New(processorConfig, &jobServiceClientMock{}, nil, nil)
 	err := sp.Start()
 	if err == nil {
 		t.Error("Expected connection open to fail")

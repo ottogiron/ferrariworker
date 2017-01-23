@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"context"
 	"fmt"
 	"log"
 	"time"
@@ -127,23 +126,6 @@ func adapterCommandAction(cmd *cobra.Command, args []string) {
 
 	jClient, close := jobServiceClient(serverAddr, caFile, serverHostOverride, tls)
 	defer close()
-
-	jobLogStream, err := jClient.RecordLog(context.Background())
-
-	if err != nil {
-		log.Fatal("Could not get stream to job service server", err)
-	}
-
-	err = jobLogStream.Send(&gen.Log{
-		WorkerId: "dummyworker123",
-		JobId:    "dummy123",
-		Message:  []byte("something"),
-	})
-
-	if err != nil {
-		log.Fatal("Could no send dummy log to server")
-	}
-
 	config, err := parseAdapterConfiguration(cmd.Name())
 
 	if err != nil {
@@ -160,7 +142,7 @@ func adapterCommandAction(cmd *cobra.Command, args []string) {
 		WaitTimeout: waitTimeout,
 	}
 	//Default stdout and stder to os.Stdout and os.Stderr
-	sp := processor.New(processorConfig, nil, nil)
+	sp := processor.New(processorConfig, jClient, nil, nil)
 	err = sp.Start()
 	if err != nil {
 		log.Fatalf("Could not start  processing %s", err)

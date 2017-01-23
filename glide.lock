@@ -1,5 +1,5 @@
 hash: 50bca6010ec0fb37a5bf34780ddfa3028367203f946ae3cf04be24aca20e4c85
-updated: 2017-01-22T00:17:24.100157875-06:00
+updated: 2017-01-22T15:45:46.33026077-06:00
 imports:
 - name: github.com/ferrariframework/ferrariserver
   version: 933d7637a3ceb00a54adac65f3a4e582ca79b246
@@ -32,6 +32,8 @@ imports:
   version: df1e16fde7fc330a0ca68167c23bf7ed6ac31d6d
 - name: github.com/pelletier/go-toml
   version: 7cb988051d5045890cb91402a0b5fddc76c627bc
+- name: github.com/pkg/errors
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
 - name: github.com/spf13/afero
   version: 06b7e5f50606ecd49148a01a6008942d9b669217
   subpackages:
