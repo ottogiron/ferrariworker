@@ -21,16 +21,16 @@ const (
 	//CommandKey key for the command to run
 	commandKey = "command"
 	//commandPathKey key for the command context path
-	commandPathKey = "command_run_path"
+	commandPathKey = "command-run-path"
 	//concurrencyKey key for the concurrency of the command
-	concurrencyKey = "max_concurrency"
+	concurrencyKey = "max-concurrency"
 	//waitTimeoutKey the time the worker will wait for new jobs in ms
-	waitTimeoutKey        = "wait_timeout"
-	serverAddressKey      = "server_addr"
+	waitTimeoutKey        = "wait-timeout"
+	serverAddressKey      = "server-addr"
 	tlsKey                = "tls"
-	caFileKey             = "ca_file"
-	serverHostOverrideKey = "server_host_override"
-	workerIDKey           = "worker_id"
+	caFileKey             = "ca-file"
+	serverHostOverrideKey = "server-host-override"
+	workerIDKey           = "worker-id"
 )
 
 // processCmd represents the process command
@@ -41,15 +41,15 @@ var processCmd = &cobra.Command{
 
 e.g.
 	ferrariworker process rabbit \
-    --worker_id="worker123" \
+    --worker-id="worker123" \
     --uri=amqp://guest:guest@localhost:5672 \
-    --queue_name=hello \
-    --consumer_auto_ack=true \
+    --queue-name=hello \
+    --consumer-auto-ack=true \
     --command="node hello.js" \
-    --command_run_path="/Users/otto" \
+    --command-run-path="/Users/otto" \
     --exchange="test-exchange" \
-    --routing_key="text-key" \
-    --max_concurrency=8
+    --routing-key="text-key" \
+    --max-concurrency=8
 `,
 	Run: func(cmd *cobra.Command, args []string) {
 
@@ -207,5 +207,5 @@ func parseAdapterConfiguration(name string) (processor.AdapterConfig, error) {
 }
 
 func viperConfigKey(cmdName string, adapterPropertyName string) string {
-	return cmdName + "_" + adapterPropertyName
+	return cmdName + "-" + adapterPropertyName
 }

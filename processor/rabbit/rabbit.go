@@ -15,32 +15,32 @@ import (
 
 const (
 	uriKey         = "uri"
-	routingKey     = "routing_key"
-	bindingWaitKey = "binding_wait"
+	routingKey     = "routing-key"
+	bindingWaitKey = "binding-wait"
 	//Queue Arguments
-	queueNameKey           = "queue_name"
-	queueDurableKey        = "queue_durable"
-	queueDeleteWhenUsedKey = "queue_delete_when_used"
-	queueExclusiveKey      = "queue_exclusive"
-	queueNoWaitKey         = "queue_no_wait"
-	queuArgumentsKey       = "queue_arguments"
+	queueNameKey           = "queue-name"
+	queueDurableKey        = "queue-durable"
+	queueDeleteWhenUsedKey = "queue-delete-when-used"
+	queueExclusiveKey      = "queue-exclusive"
+	queueNoWaitKey         = "queue-no-wait"
+	queuArgumentsKey       = "queue-arguments"
 	//Consumer arguments
-	consumerTagKey       = "consumer_tag"
-	consumerAutoAckKey   = "consumer_auto_ack"
-	consumerExclusiveKey = "consumer_exclusive"
-	consumerNoLocalKey   = "consumer_no_local"
-	consumerNoWaitKey    = "consumer_no_wait"
-	consumerArgsKey      = "consumer_args"
+	consumerTagKey       = "consumer-tag"
+	consumerAutoAckKey   = "consumer-auto-ack"
+	consumerExclusiveKey = "consumer-exclusive"
+	consumerNoLocalKey   = "consumer-no-local"
+	consumerNoWaitKey    = "consumer-no-wait"
+	consumerArgsKey      = "consumer-args"
 	//Exchange configurations
 	exchangeNameKey               = "exchange"
-	exchangeTypeKey               = "exchange_type"
-	exchangeDurableKey            = "exchange_durable"
-	exchangeDeleteWhenCompleteKey = "exchange_delete_when_complete"
-	exchangeInternalKey           = "exchange_internal"
-	exchangeNowaitKey             = "exchange_no_wait"
+	exchangeTypeKey               = "exchange-type"
+	exchangeDurableKey            = "exchange-durable"
+	exchangeDeleteWhenCompleteKey = "exchange-delete-when-complete"
+	exchangeInternalKey           = "exchange-internal"
+	exchangeNowaitKey             = "exchange-no-wait"
 	//Message configurations
-	onSuccessKey = "on_sucess"
-	onFailedKey  = "on_failed"
+	onSuccessKey = "on-sucess"
+	onFailedKey  = "on-failed"
 )
 
 type factory struct{}

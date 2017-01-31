@@ -41,18 +41,18 @@ This example shows jobs processing from rabbitmq using a Node.js script as job p
 
 ```bash
 ferrariworker process rabbit \
-    --worker_id="worker123" \
+    --worker-id="worker123" \
     --tls=false \
-    --server_addr="127.0.0.1:4151"
+    --server-addr="127.0.0.1:4151"
     --uri=amqp://guest:guest@localhost:5672 \
-    --queue_name=hello \
-    --queue_durable=true \
-    --consumer_auto_ack=false \
+    --queue-name=hello \
+    --queue-durable=true \
+    --consumer-auto-ack=false \
     --command="node worker.js" \
-    --command_run_path="/Users/ottogiron/workspace/helloworker" \
+    --command-run-path="/Users/ottogiron/workspace/helloworker" \
     --exchange="test-exchange" \
-    --routing_key="test-key" \
-    --max_concurrency=8
+    --routing-key="test-key" \
+    --max-concurrency=8
 ```
 
 ### Example job script for Node
