@@ -22,7 +22,7 @@ var schema = &processor.AdapterConfigurationSchema{
 		},
 		processor.AdapterConfigurationProperty{
 			Name:        bindingWaitKey,
-			Type:        processor.PropertyTypeString,
+			Type:        processor.PropertyTypeBool,
 			Description: "Binding wait",
 			Default:     false,
 			Optional:    false,
