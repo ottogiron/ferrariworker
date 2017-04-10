@@ -18,6 +18,7 @@ var schema = &processor.AdapterConfigurationSchema{
 			Name:        routingKey,
 			Type:        processor.PropertyTypeString,
 			Description: "Routing Key",
+			Default: ""
 			Optional:    false,
 		},
 		processor.AdapterConfigurationProperty{
@@ -31,6 +32,7 @@ var schema = &processor.AdapterConfigurationSchema{
 			Name:        queueNameKey,
 			Type:        processor.PropertyTypeString,
 			Description: "Rabbit queue name",
+			Default: "hello-queue"
 			Optional:    false,
 		},
 		processor.AdapterConfigurationProperty{
